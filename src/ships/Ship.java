@@ -18,7 +18,7 @@ public class Ship extends Parent {
 	}
 	
 	// The player that this ship belongs to.
-	public final Player.PlayerType player;
+	public final Player player;
 	
 	// The current position of the game piece.
 	private Square currentPosition;
@@ -46,7 +46,7 @@ public class Ship extends Parent {
 	 * @param player The player to whom this ship belongs
 	 * @param moveDirection The direction that this ship is allowed to move.
 	 */
-	public Ship(Square position, Player.PlayerType player, DirectionOfMovement moveDirection, int damage, int id) {
+	public Ship(Square position, Player player, DirectionOfMovement moveDirection, int damage, int id) {
 		currentPosition = position;
 		this.player = player;
 		this.moveDirection = moveDirection;

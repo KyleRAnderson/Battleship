@@ -2,6 +2,7 @@ package board;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import player.Player;
 import ships.Ship;
 
 /**
@@ -17,6 +18,8 @@ public class Square extends Rectangle {
 	// The ship currently on this square
 	private Ship currentShip;
 	
+	static final Color DEFAULT_FILL = Color.BLACK, DEFAULT_STROKE = Color.WHITE;
+	
 	/**
 	 * Instantiates a square and makes a square on the UI.
 	 * @param x The x coordinate of the square
@@ -30,8 +33,8 @@ public class Square extends Rectangle {
 		yCoordinate = y;
 		
 		// Set the colours for the square
-		setFill(Color.LIGHTBLUE);
-		setStroke(Color.AQUA);
+		setFill(DEFAULT_FILL);
+		setStroke(DEFAULT_STROKE);
 	}
 	
 	/**
@@ -70,7 +73,7 @@ public class Square extends Rectangle {
 		/* If there's an enemy ship on this position already, this square is being contested
 		 * so we need to enter battle mode
 		 */
-		else if (currentShip.player != ship.player) {
+		else if (!currentShip.player.equals(ship.player)) {
 			currentShip = Board.battle(currentShip, ship);
 			shipAdded = currentShip.equals(ship);
 		}
@@ -99,5 +102,19 @@ public class Square extends Rectangle {
 	 */
 	public boolean isUsable() {
 		return currentShip.isDestroyed();
+	}
+	
+	/**
+	 * Selects this square, making it have an outline 
+	 */
+	public void select(Player player) {
+		setStroke(player.getSelectionColour());
+	}
+	
+	/**
+	 * Deselects this square.
+	 */
+	public void deselect() {
+		setStroke(DEFAULT_FILL);
 	}
 }

@@ -12,10 +12,20 @@ import main.BattleshipGalacticaMain;
  */
 public class PlayerSelection extends Parent {
 	
-	ImageView IMC, militia;
+	ImageView IMC, militia, background;
 	
 	public PlayerSelection() {
 		IMC = new ImageView("file:" + BattleshipGalacticaMain.RESOURCES_LOCATION + "/imc.png");
+		IMC.setScaleX(0.2);
+		IMC.setScaleY(0.2);		
+		
 		militia = new ImageView("file:" + BattleshipGalacticaMain.RESOURCES_LOCATION + "/militia.png");
+		militia.setScaleX(0.2);
+		militia.setScaleY(0.2);
+		
+		
+		background = new ImageView("file:" + BattleshipGalacticaMain.RESOURCES_LOCATION + "/main_background.png");
+		background.setScaleX(1);
+		background.setScaleY(1);
 	}
 }

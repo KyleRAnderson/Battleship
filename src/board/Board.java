@@ -1,8 +1,6 @@
 package board;
 
-import javafx.event.EventHandler;
 import javafx.scene.Parent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import ships.Ship;
@@ -17,15 +15,20 @@ public class Board extends Parent {
 	private VBox rows = new VBox();
 	
 	/**
+	 * The current turn, 0 to start.
+	 */
+	private int turn = 0;
+	
+	/**
 	 * The number of ships that each player has to deal with.
 	 */
 	public static final int NUMBER_OF_SHIPS_PER_PLAYER = 10, NUM_ROWS = 10, NUM_COLUMNS = 20;
 	
-	private static final Square[][] SQUARES = new Square[NUM_ROWS][NUM_COLUMNS];
+	private final Square[][] squares = new Square[NUM_ROWS][NUM_COLUMNS];
 	/**
 	 * List of all the ships on the board, whether or not they're alive.
 	 */
-	private static final Ship[] SHIPS = new Ship[NUMBER_OF_SHIPS_PER_PLAYER * 2];
+	private final Ship[] ships = new Ship[NUMBER_OF_SHIPS_PER_PLAYER * 2];
 	
 	
 	// We need to have states to keep track of what state we're currently in
@@ -36,18 +39,17 @@ public class Board extends Parent {
 	// The current state of the board.
 	private static State state = State.Initial;
 	
-	public Board(EventHandler<MouseEvent> squareClickHandler) {	
+	public Board() {	
 		// Let's get the squares objects rolling. Populate the squares array.
-		for (int y = 0; y < NUM_ROWS; y++) {
+		for (int y = 0; y < NUM_COLUMNS; y++) {
 			HBox row = new HBox();
-			for (int x = 0; x < NUM_COLUMNS; x++) {
+			for (int x = 0; x < NUM_ROWS; x++) {
 				// Make a new square object for this position.
 				Square square = new Square(x, y);
-				square.setOnMouseClicked(squareClickHandler);
 				// Add the square to the row
 				row.getChildren().add(square);
 				// Put the square in the squares array
-				SQUARES[x][y] = square;
+				squares[x][y] = square;
 			}
 			// Add the row to the rows.
 			rows.getChildren().add(row);
@@ -77,13 +79,13 @@ public class Board extends Parent {
 	 * @return The Square object at the provided coordinates, if the coordinates exist. Else,
 	 * returns null.
 	 */
-	public static Square getSquare(int x, int y) {
+	public Square getSquare(int x, int y) {
 		// The object to be returned at the end
 		Square squareAtPosition = null;
 		
 		// Make sure the coordinates exist
-		if (0 <= x && x <= SQUARES.length && 0 <= y && y <= SQUARES[x].length) {
-			squareAtPosition = SQUARES[x][y];
+		if (0 <= x && x <= squares.length && 0 <= y && y <= squares[x].length) {
+			squareAtPosition = squares[x][y];
 		}
 		
 		// Return result
