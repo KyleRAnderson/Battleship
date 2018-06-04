@@ -1,11 +1,13 @@
 package player;
 
 import javafx.scene.paint.Color;
+import main.BattleshipGalacticaMain;
 import main.Game;
 
 import java.util.HashMap;
 
 import board.Board;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 
 public class Militia extends Player{
@@ -37,4 +39,6 @@ public class Militia extends Player{
 	}
 	
 	public Color getSelectionColour() { return Color.ORANGE; }
+	
+	public ImageView getIcon() { return new ImageView("file:/" + BattleshipGalacticaMain.RESOURCES_LOCATION + "/militia.png"); }
 }

@@ -31,6 +31,10 @@ public class Game {
 	 */
 	public Game() {
 		board = new Board(this);
+		// Reset input from any previous games (if any)
+		InputHandler.stopMonitoring();
+		InputHandler.resetBindings();
+		
 		players = new Player[] { new IMC(this), new Militia(this) };
 		
 		boardManipulation = new BoardManipulation();
@@ -45,6 +49,9 @@ public class Game {
 		for (Player player : players) {
 			player.resetPosition();
 		}
+		
+		// Begin monitoring input
+		InputHandler.startMonitoring();
 	}
 	
 	/**

@@ -12,6 +12,11 @@ import javafx.scene.input.KeyEvent;
 public class InputHandler {
 	
 	/**
+	 * Wheter or not this input handler is currently monitoring inputs.
+	 */
+	private static boolean monitoring;
+	
+	/**
 	 * Used to keep track of all the keys possible to be pressed and the method which must be called for each one.
 	 */
 	private static final HashMap<KeyCode, Consumer<KeyCode>> BINDINGS = new HashMap<KeyCode, Consumer<KeyCode>>();
@@ -28,7 +33,7 @@ public class InputHandler {
 				KeyCode key = event.getCode();
 				
 				// Now see if there's a binding for that key and if there is, call it.
-				if (BINDINGS.containsKey(key)) BINDINGS.get(key).accept(key);;
+				if (BINDINGS.containsKey(key) && monitoring) BINDINGS.get(key).accept(key);;
 			}
 			
 		});
@@ -73,5 +78,26 @@ public class InputHandler {
 		for (KeyCode binding : bindings) {
 			BINDINGS.remove(binding);
 		}
+	}
+	
+	/**
+	 * Deletes all bindings set to this input handler.
+	 */
+	public static void resetBindings() {
+		BINDINGS.clear();
+	}
+	
+	/**
+	 * Stops the monitoring of this input handler.
+	 */
+	public static void stopMonitoring() {
+		monitoring = false;
+	}
+	
+	/**
+	 * Makes the input handler begin monitoring inputs and calling bindings when necessary
+	 */
+	public static void startMonitoring() {
+		monitoring = true;
 	}
 }

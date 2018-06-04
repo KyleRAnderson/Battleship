@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import main.Game;
@@ -38,7 +39,7 @@ public abstract class Player {
 	
 	/**
 	 * Handles player specific key presses.
-	 * @param key
+	 * @param key The key that was pressed.
 	 */
 	private void onKeyPressed(KeyCode key) {
 		HashMap<String, KeyCode> keyBindings = getKeyBindings();
@@ -71,6 +72,10 @@ public abstract class Player {
 		BoardManipulation.moveTo(this, x, y);
 	}
 	
+	/**
+	 * Get the colour that this player should glow when selecting a square
+	 * @return The colour of this player's selection
+	 */
 	public abstract Color getSelectionColour();
 	
 	/**
@@ -80,4 +85,10 @@ public abstract class Player {
 	public Game getGame() {
 		return game;
 	}
+	
+	/**
+	 * Gets the ImageView for this player's icon.
+	 * @return This player's icon.
+	 */
+	public abstract ImageView getIcon();
 }
