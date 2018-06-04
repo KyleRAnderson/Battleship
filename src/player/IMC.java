@@ -1,6 +1,7 @@
 package player;
 
 import javafx.scene.paint.Color;
+import main.Game;
 
 import java.util.HashMap;
 
@@ -8,23 +9,27 @@ import javafx.scene.input.KeyCode;
 
 public class IMC extends Player {
 	
-	int START_X = 0, START_Y = 0;
-	
-	HashMap<String, KeyCode> keyBindings = new HashMap<String, KeyCode>() {
-		private static final long serialVersionUID = 1L;
+	HashMap<String, KeyCode> getKeyBindings() {
+		return new HashMap<String, KeyCode>() {
+			private static final long serialVersionUID = 1L;
 
-	{
-			put(UP, KeyCode.UP);
-			put(DOWN, KeyCode.DOWN);
-			put(LEFT ,KeyCode.LEFT);
-			put(RIGHT, KeyCode.RIGHT);
-			put(ENTER, KeyCode.ENTER);
-			put(MOVE, KeyCode.M);
-			put(TOGGLE_SHIP, KeyCode.BACK_SLASH);
-	}};
+			{
+					put(UP, KeyCode.UP);
+					put(DOWN, KeyCode.DOWN);
+					put(LEFT ,KeyCode.LEFT);
+					put(RIGHT, KeyCode.RIGHT);
+					put(ENTER, KeyCode.ENTER);
+					put(MOVE, KeyCode.M);
+					put(TOGGLE_SHIP, KeyCode.BACK_SLASH);
+			}};
+	}
 	
-	public IMC() {
-		super();
+	/**
+	 * An IMC player
+	 * @param game the game that this player is playing.
+	 */
+	public IMC(Game game) {
+		super(game);
 		x = 0;
 		y = 0;
 	}

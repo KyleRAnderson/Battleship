@@ -17,18 +17,29 @@ public class Square extends Rectangle {
 	
 	// The ship currently on this square
 	private Ship currentShip;
+	// The board that this square belongs to.
+	private Board board;
 	
-	static final Color DEFAULT_FILL = Color.BLACK, DEFAULT_STROKE = Color.WHITE;
+	static final Color DEFAULT_FILL = Color.ALICEBLUE, DEFAULT_STROKE = Color.BLACK;
+	static final double DEFAULT_THICKNESS = 1.0, SELECTED_THICKNESS = 2.0;
+	
+	/**
+	 * Whether or not this square is currently selected by a player
+	 */
+	private boolean isSelected;
 	
 	/**
 	 * Instantiates a square and makes a square on the UI.
 	 * @param x The x coordinate of the square
 	 * @param y The y coordiante of the square.
 	 */
-	public Square(int x, int y) {
+	public Square(int x, int y, Board board) {
 		// Actually make a rectangle now.
 		super(30, 30);
 		
+		// Set up the board object
+		this.board = board;
+		// Also set the coordinates of this square.
 		xCoordinate = x;
 		yCoordinate = y;
 		
@@ -105,16 +116,38 @@ public class Square extends Rectangle {
 	}
 	
 	/**
-	 * Selects this square, making it have an outline 
+	 * Determines if this square should be selected, and if so selects it. 
+	 * If not, goes back to default border.
 	 */
-	public void select(Player player) {
-		setStroke(player.getSelectionColour());
+	public void refreshSelection() {
+		// Set selection variable to false
+		isSelected = false;
+		
+		// The number of players on this square
+		int numberOfPlayers = 0;
+		// Iterate through all the players in the game
+		for (Player player : board.getGame().getPlayers()) {
+			if (player.x == xCoordinate && player.y == yCoordinate) {
+				setSelected(player.getSelectionColour(), true);
+				isSelected = true;
+				numberOfPlayers++;
+			}
+		}
+		
+		// If there's more than one player on the grid, set to brown selection.
+		if (numberOfPlayers > 1) setSelected(Color.BROWN, true);
+		
+		// If the selection variable is still false, reset fill to default
+		if (!isSelected) setSelected(null, false);
 	}
 	
 	/**
-	 * Deselects this square.
+	 * Sets the thickness and the colour of selection of this rectangle
+	 * @param colour The colour of the selection 
+	 * @param selected True if the square is selected, false otherwise.
 	 */
-	public void deselect() {
-		setStroke(DEFAULT_FILL);
+	private void setSelected(Color colour, boolean selected) {
+		if (selected) setFill(colour);
+		else setFill(DEFAULT_FILL);
 	}
 }

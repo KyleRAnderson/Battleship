@@ -3,6 +3,8 @@ package board;
 import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import main.Game;
+import player.Player;
 import ships.Ship;
 
 /**
@@ -20,11 +22,16 @@ public class Board extends Parent {
 	private int turn = 0;
 	
 	/**
+	 * The Game object to which this board belongs.
+	 */
+	private Game game;
+	
+	/**
 	 * The number of ships that each player has to deal with.
 	 */
 	public static final int NUMBER_OF_SHIPS_PER_PLAYER = 10, NUM_ROWS = 10, NUM_COLUMNS = 20;
 	
-	private final Square[][] squares = new Square[NUM_ROWS][NUM_COLUMNS];
+	private final Square[][] squares = new Square[NUM_COLUMNS][NUM_ROWS];
 	/**
 	 * List of all the ships on the board, whether or not they're alive.
 	 */
@@ -36,16 +43,26 @@ public class Board extends Parent {
 		Initial, Battle
 	}
 	
+	// The players playing on this board.
+	Player[] players;
+	
 	// The current state of the board.
 	private static State state = State.Initial;
 	
-	public Board() {	
+	/**
+	 * Instantiates a new board for the given game
+	 * @param game The game for this board.
+	 */
+	public Board(Game game) {
+		// Set the game object
+		this.game = game;
+		
 		// Let's get the squares objects rolling. Populate the squares array.
-		for (int y = 0; y < NUM_COLUMNS; y++) {
+		for (int y = 0; y < NUM_ROWS; y++) {
 			HBox row = new HBox();
-			for (int x = 0; x < NUM_ROWS; x++) {
+			for (int x = 0; x < NUM_COLUMNS; x++) {
 				// Make a new square object for this position.
-				Square square = new Square(x, y);
+				Square square = new Square(x, y, this);
 				// Add the square to the row
 				row.getChildren().add(square);
 				// Put the square in the squares array
@@ -84,7 +101,7 @@ public class Board extends Parent {
 		Square squareAtPosition = null;
 		
 		// Make sure the coordinates exist
-		if (0 <= x && x <= squares.length && 0 <= y && y <= squares[x].length) {
+		if (isValidPosition(x, y)) {
 			squareAtPosition = squares[x][y];
 		}
 		
@@ -94,5 +111,23 @@ public class Board extends Parent {
 	
 	public static State getState() {
 		return state;
+	}
+	
+	/**
+	 * Gets the game that this board belongs to
+	 * @return The game object for this board.
+	 */
+	public Game getGame() {
+		return game;
+	}
+	
+	/**
+	 * Determines if the given position is a valid position on the board
+	 * @param x The x-coordinate
+	 * @param y The y-coordinate
+	 * @return True if it's a valid position, false otherwise.
+	 */
+	public boolean isValidPosition(int x, int y) {
+		return (0 <= x && x <= NUM_COLUMNS - 1 && 0 <= y && y <= NUM_ROWS - 1);
 	}
 }

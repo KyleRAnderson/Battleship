@@ -1,7 +1,7 @@
 package ships;
 
 import board.Square;
-import javafx.scene.Parent;
+import javafx.scene.shape.Ellipse;
 import player.Player;
 
 /**
@@ -10,7 +10,7 @@ import player.Player;
  * 2018-06-05
  * ICS3U
  */
-public class Ship extends Parent {
+public class Ship extends Ellipse {
 	
 	// The types of movement possible for a ship
 	public static enum DirectionOfMovement {

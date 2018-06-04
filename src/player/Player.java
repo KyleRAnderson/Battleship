@@ -6,28 +6,34 @@ import java.util.function.Consumer;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
+import main.Game;
 import main.InputHandler;
 import manipulation.BoardManipulation;
 
-public abstract class Player {		
+public abstract class Player {
 	// The current position (selection) of the player.
 	public int x, y;
 	
+	// The starting position of the player
 	protected int START_X, START_Y;
 	
-	protected HashMap<String, KeyCode> keyBindings;
+	// The board object on which this player is playing.
+	protected Game game;
 	
 	public static final String UP = "UP", DOWN = "DOWN", LEFT = "LEFT", RIGHT = "RIGHT", ENTER = "ENTER", MOVE = "MOVE", TOGGLE_SHIP = "TOGGLE";
 	
-	public Player() {		
+	/**
+	 * Instantiates a player object.
+	 * @param game The game to which this player belongs
+	 */
+	public Player(Game game) {
+		this.game = game;
 		InputHandler.addKeyBindings(getKeysUsed(), new Consumer<KeyCode>() {
 			@Override
 			public void accept(KeyCode t) {
 				onKeyPressed(t);
 			}
 		});
-		
-		resetPosition();
 	}
 	
 	/**
@@ -35,27 +41,25 @@ public abstract class Player {
 	 * @param key
 	 */
 	private void onKeyPressed(KeyCode key) {
-		if (key.equals(keyBindings.get(UP))) BoardManipulation.move(this, BoardManipulation.MoveDirection.up);
-		else if (key.equals(keyBindings.get(DOWN))) BoardManipulation.move(this, BoardManipulation.MoveDirection.down);
-		else if (key.equals(keyBindings.get(LEFT))) BoardManipulation.move(this, BoardManipulation.MoveDirection.left);
-		else if (key.equals(keyBindings.get(RIGHT))) BoardManipulation.move(this, BoardManipulation.MoveDirection.right);
+		HashMap<String, KeyCode> keyBindings = getKeyBindings();
+		if (key.equals(keyBindings.get(UP))) game.boardManipulation.move(this, BoardManipulation.MoveDirection.up);
+		else if (key.equals(keyBindings.get(DOWN))) game.boardManipulation.move(this, BoardManipulation.MoveDirection.down);
+		else if (key.equals(keyBindings.get(LEFT))) game.boardManipulation.move(this, BoardManipulation.MoveDirection.left);
+		else if (key.equals(keyBindings.get(RIGHT))) game.boardManipulation.move(this, BoardManipulation.MoveDirection.right);
 	}
+	
+	/**
+	 * Gets the key bindings for the specific 
+	 * @return
+	 */
+	abstract HashMap<String, KeyCode> getKeyBindings();
 	
 	/**
 	 * Returns a list of the keys that this player uses
 	 * @return The keys used by this player.
 	 */
 	public Collection<KeyCode> getKeysUsed() {
-		return keyBindings.values();
-	}
-	
-	/**
-	 * Gets the key binding for the given type of action 
-	 * @param name The name of the action
-	 * @return The KeyCode for this action, or null if no such action exists.
-	 */
-	public KeyCode getBinding(String name) {
-		return keyBindings.get(name);
+		return getKeyBindings().values();
 	}
 	
 	/**
@@ -68,4 +72,12 @@ public abstract class Player {
 	}
 	
 	public abstract Color getSelectionColour();
+	
+	/**
+	 * Gets the game that this player belongs to.
+	 * @return The game object to which this player belongs.
+	 */
+	public Game getGame() {
+		return game;
+	}
 }
