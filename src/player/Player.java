@@ -38,6 +38,9 @@ public abstract class Player {
 	 */
 	protected ArrayList<Ship> ships = new ArrayList<Ship>();
 	
+	// The ship currently selected by this player
+	protected Ship selectedShip;
+	
 	protected static int NUM_SHOTS = 4;
 	protected int numShotsLeft = NUM_SHOTS;
 	
@@ -201,5 +204,13 @@ public abstract class Player {
 	 */
 	public int getDamage() {
 		return damage;
+	}
+	
+	/**
+	 * Gets the ship that the player currently has selected and is (likely) in the middle of moving.
+	 * @return The ship that the player has selected.
+	 */
+	public Ship getSelectedShip() {
+		return selectedShip;
 	}
 }

@@ -1,8 +1,13 @@
 package board;
 
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import main.BattleshipGalactica;
 import main.Game;
 import player.Player;
 import ships.Ship;
@@ -31,11 +36,22 @@ public class Board extends Parent {
 	 */
 	private final Ship[] ships = new Ship[NUMBER_OF_SHIPS_PER_PLAYER * 2];
 	
-	// The ship selection object, used to select which ship the player is controlling
-	public final ShipSelection[] shipSelectors = new ShipSelection[2];
+	/**
+	 * The label for the current turn
+	 */
+	private final Text turnLabel = new Text();
+	/**
+	 * The message to be displayed on screen to help the player.
+	 */
+	private final Text message = new Text();
 	
 	// The players playing on this board.
 	Player[] players;
+	
+	// The grid that controls the way things are laid out.
+	GridPane grid;
+	
+	private static final double GAP = 10, PADDING = 20;
 	
 	/**
 	 * Instantiates a new board for the given game
@@ -44,6 +60,26 @@ public class Board extends Parent {
 	public Board(Game game) {
 		// Set the game object
 		this.game = game;
+		
+		// Set up the grid pane.
+		grid = new GridPane();
+		grid.setHgap(GAP);
+		grid.setVgap(GAP);
+		grid.setPadding(new Insets(PADDING, PADDING, PADDING, PADDING));
+		getChildren().add(grid);
+		
+		// Set up the turn label at the top of the board.
+		turnLabel.setFont(BattleshipGalactica.HEADING_FONT);
+		turnLabel.setFill(Color.RED);
+		GridPane.setConstraints(turnLabel, 1, 0);
+		
+		// Now set up the message text
+		message.setFont(BattleshipGalactica.HEADING_FONT);
+		message.setFill(Color.BLACK);
+		GridPane.setConstraints(message, 0, 0);
+		
+		// Add the turn indicator and the message to the screen.
+		grid.getChildren().addAll(turnLabel, message);
 		
 		// Let's get the squares objects rolling. Populate the squares array.
 		for (int y = 0; y < NUM_ROWS; y++) {
@@ -59,8 +95,10 @@ public class Board extends Parent {
 			// Add the row to the rows.
 			rows.getChildren().add(row);
 		}
+		// Set constraints for the board grid itself.
+		GridPane.setConstraints(rows, 0, 1, 2, 1);
 		// Add the board to the children.
-		getChildren().add(rows);
+		grid.getChildren().add(rows);
 		
 		// Now generate ships for each player
 		for (int playerNum = 0; playerNum < 2; playerNum++) {
@@ -74,11 +112,6 @@ public class Board extends Parent {
 				// Add the ship to the player's collection
 				player.addShip(ship);
 			}
-			
-			// While we're looping through players, make a ship selector for the player.
-			ShipSelection selector = new ShipSelection(player);
-			shipSelectors[playerNum] = selector;
-			getChildren().add(selector);
 		}
 	}
 	
@@ -152,6 +185,22 @@ public class Board extends Parent {
 	 */
 	public static int getDistanceBetween(int x1, int y1, int x2, int y2) {
 		return (int) Math.round(Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2)));
+	}
+	
+	/**
+	 * Sets the turn message that is displayed on the board indicating which turn number it is.
+	 * @param turn The current turn.
+	 */
+	public void setTurn(int turn) {
+		turnLabel.setText("TURN: " + turn);
+	}
+	
+	/**
+	 * Set the current message being displayed on the board to the given content.
+	 * @param message The message to be displayed on screen.
+	 */
+	public void setMessage(String message) {
+		this.message.setText(message);
 	}
 }
 

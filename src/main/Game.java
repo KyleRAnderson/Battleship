@@ -33,6 +33,9 @@ public class Game {
 		ShipPlacement, Firing, Player1Movement, Player2Movement;  
 	}
 	
+	// The current game state. Start it in ship placement by default.
+	private GameState state = GameState.ShipPlacement;
+	
 	/**
 	 * The players of this game.
 	 */
@@ -68,6 +71,12 @@ public class Game {
 		
 		// Begin monitoring input
 		InputHandler.startMonitoring();
+		
+		// Set the state to ship placement.
+		state = GameState.ShipPlacement;
+		
+		// Give the user a little help with what to do
+		board.setMessage("Use the arrow keys or WASD to move your selection.\nPlace your ships.");
 	}
 	
 	/**
@@ -80,6 +89,7 @@ public class Game {
 		}
 		
 		turn++;
+		board.setTurn(turn);
 	}
 	
 	public boolean isWinner() {
@@ -108,5 +118,13 @@ public class Game {
 	 */
 	public Board getBoard() {
 		return board;
+	}
+	
+	/**
+	 * Returns the state of the current game, what's going on.
+	 * @return The game's state.
+	 */
+	public GameState getState() {
+		return state;
 	}
 }

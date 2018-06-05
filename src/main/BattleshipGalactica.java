@@ -1,6 +1,7 @@
 package main;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
@@ -16,6 +17,11 @@ public class BattleshipGalactica extends Application {
 	public static final String RESOURCES_LOCATION = "resources";
 	// The current game being played.
 	private static Game currentGame;	
+	
+	/**
+	 * The font for all headings in the game.
+	 */
+	public static final Font HEADING_FONT = Font.font("Impact", 20);
 	
 	/**
 	 * 
