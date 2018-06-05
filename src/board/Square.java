@@ -150,4 +150,20 @@ public class Square extends Rectangle {
 		if (selected) setFill(colour);
 		else setFill(DEFAULT_FILL);
 	}
+	
+	/**
+	 * Gets the x coordinate of the center of this square
+	 * @return The center x coordinate for this square
+	 */
+	public double getCenterX() {
+		return getX() - getWidth() / 2;
+	}
+	
+	/**
+	 * Gets the y coordinate of the center of this square.
+	 * @return The center y coordinate for this square.
+	 */
+	public double getCenterY() {
+		return getY() + getWidth() / 2;
+	}
 }

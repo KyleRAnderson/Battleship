@@ -6,7 +6,6 @@ import main.Game;
 
 import java.util.HashMap;
 
-import board.Board;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 
@@ -22,7 +21,7 @@ public class Militia extends Player{
 				put(RIGHT, KeyCode.D);
 				put(ENTER, KeyCode.TAB);
 				put(MOVE, KeyCode.SHIFT);
-				put(TOGGLE_SHIP, KeyCode.L);
+				put(TOGGLE_SHIP, KeyCode.getKeyCode("BACK_QUOTE"));
 			}};
 	}
 	
@@ -30,12 +29,8 @@ public class Militia extends Player{
 	 * A militia player
 	 * @param game the game that this player is playing
 	 */
-	public Militia(Game game) {
-		super(game);
-		START_X = Board.NUM_COLUMNS - 1;
-		START_Y = Board.NUM_ROWS - 1;
-		x = START_X;
-		y = START_Y;
+	public Militia(Game game, StartSide side) {
+		super(game, side);
 	}
 	
 	public Color getSelectionColour() { return Color.ORANGE; }

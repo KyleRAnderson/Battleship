@@ -22,6 +22,13 @@ public class Game {
 	public final ShipManipulation shipManipulation;
 	
 	/**
+	 * The state of this current game.
+	 */
+	public static enum GameState {
+		ShipPlacement, Firing, Player1Movement, Player2Movement;  
+	}
+	
+	/**
 	 * The players of this game.
 	 */
 	Player[] players;
@@ -30,12 +37,16 @@ public class Game {
 	 * Instantiates a new game object and readies for the playing of a new game.
 	 */
 	public Game() {
-		board = new Board(this);
+		
 		// Reset input from any previous games (if any)
 		InputHandler.stopMonitoring();
 		InputHandler.resetBindings();
 		
-		players = new Player[] { new IMC(this), new Militia(this) };
+		// Make the players
+		players = new Player[] { new IMC(this, Player.StartSide.BottomRight), new Militia(this, Player.StartSide.TopLeft) };
+		
+		// Make the board
+		board = new Board(this);
 		
 		boardManipulation = new BoardManipulation();
 		shipManipulation = new ShipManipulation();

@@ -7,11 +7,6 @@ import player.Player;
 public class BoardManipulation {
 	
 	/**
-	 * The board which this object shall manipulate
-	 */
-	Board board;
-	
-	/**
 	 * The possible directions for the player to move.
 	 */
 	public static enum MoveDirection {

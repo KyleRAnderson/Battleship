@@ -37,6 +37,9 @@ public class Board extends Parent {
 	 */
 	private final Ship[] ships = new Ship[NUMBER_OF_SHIPS_PER_PLAYER * 2];
 	
+	// The ship selection object, used to select which ship the player is controlling
+	public final ShipSelection[] shipSelectors = new ShipSelection[2];
+	
 	
 	// We need to have states to keep track of what state we're currently in
 	public static enum State {
@@ -73,6 +76,25 @@ public class Board extends Parent {
 		}
 		// Add the board to the children.
 		getChildren().add(rows);
+		
+		// Now generate ships for each player
+		for (int playerNum = 0; playerNum < 2; playerNum++) {
+			Player player = game.getPlayers()[playerNum];		
+			
+			for (int i = 0; i < NUMBER_OF_SHIPS_PER_PLAYER; i++) {
+				// Make new ship object, giving it the player, the direction and the damage.
+				Ship ship = new Ship(player, (i % 2 == 0) ? Ship.DirectionOfMovement.Diagonal : Ship.DirectionOfMovement.Horizontal, i);
+				ships[i * playerNum + 1] = ship;
+				
+				// Add the ship to the player's collection
+				player.addShip(ship);
+			}
+			
+			// While we're looping through players, make a ship selector for the player.
+			ShipSelection selector = new ShipSelection(player);
+			shipSelectors[playerNum] = selector;
+			getChildren().add(selector);
+		}
 	}
 	
 	/**
@@ -130,4 +152,13 @@ public class Board extends Parent {
 	public boolean isValidPosition(int x, int y) {
 		return (0 <= x && x <= NUM_COLUMNS - 1 && 0 <= y && y <= NUM_ROWS - 1);
 	}
+	
+	/**
+	 * Gets all the ships on the board.
+	 * @return All the ships on this board.
+	 */
+	public Ship[] getShips() {
+		return ships;
+	}
 }
+

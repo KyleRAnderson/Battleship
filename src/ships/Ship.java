@@ -1,5 +1,6 @@
 package ships;
 
+import board.Board;
 import board.Square;
 import javafx.scene.shape.Ellipse;
 import player.Player;
@@ -10,12 +11,26 @@ import player.Player;
  * 2018-06-05
  * ICS3U
  */
-public class Ship extends Ellipse {
-	
+public class Ship extends Ellipse {	
 	// The types of movement possible for a ship
 	public static enum DirectionOfMovement {
 		Horizontal, Diagonal
 	}
+	
+	// The possible types of ships
+	public static enum TypeOfShip {
+		Destroyer, Aircraft, Battleship, Submarine, Small 
+	}
+	
+	public final String image_location;
+	
+	/**
+	 * List of damages that each ship will have.
+	 */
+	public static final int[] DAMAGES = new int[] { 80, 80, 50, 50, 40, 40, 40, 20, 20, 10 };
+	public static final String[] IMAGE_LOCATIONS =  new String[] { "destroyer.png", "destroyer.png", 
+			"aircraft_Carrier.png", "aircraft_carrier.png", "battleship.png", "battleship.png", 
+			"battleship.png", "small.png", "small.png", "submarine.png" };
 	
 	// The player that this ship belongs to.
 	public final Player player;
@@ -29,29 +44,33 @@ public class Ship extends Ellipse {
 	// The direction that this type of ship can move in.
 	private final DirectionOfMovement moveDirection;
 	
-	// The range of the ship's cannons, in squares. Also, the health of the ship.
-	private int cannonRange, health = 100;
+	// The health of the ship.
+	private int health = 100;
 	
 	// The damage that this ship's cannons do.
 	public final int damage;
 	
 	/**
-	 * The ships's id, from 1 to [number of ships]
-	 */
-	public final int id;
-	
-	/**
 	 * Instantiates a new ship object
-	 * @param position The initial square position of the ship on the board
 	 * @param player The player to whom this ship belongs
 	 * @param moveDirection The direction that this ship is allowed to move.
+	 * @param id The nth number of player's ships that this ship corresponds to.
 	 */
-	public Ship(Square position, Player player, DirectionOfMovement moveDirection, int damage, int id) {
-		currentPosition = position;
+	public Ship(Player player, DirectionOfMovement moveDirection, int id) {
 		this.player = player;
 		this.moveDirection = moveDirection;
-		this.damage = damage;
-		this.id = id;
+		damage = DAMAGES[id];
+		image_location = "file:/resources/ships/" + IMAGE_LOCATIONS[id];
+	}
+	
+	/**
+	 * Gets this ship's cannons' range in squares. The range is inversely proportional to the damage, 
+	 * so that the further the ship CAN shoot, the less damage it does.
+	 * @return The range of the ship in squares.
+	 */
+	public int getRange() {
+		// Convert to percentage and mulitply by the number of rows in the table.
+		return (int)Math.round((100 - damage) / 100.0 * Board.NUM_ROWS);  
 	}
 	
 	/**
@@ -100,5 +119,13 @@ public class Ship extends Ellipse {
 	 */
 	public int getHealth() {
 		return health;
+	}
+	
+	/**
+	 * Determines if the player who owns this ship has this ship selected
+	 * @return True if this ship is selected, false otherwise.
+	 */
+	public boolean isSelected() {
+		return player.getSelectedShip().equals(this);
 	}
 }

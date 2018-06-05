@@ -30,10 +30,8 @@ public class IMC extends Player {
 	 * An IMC player
 	 * @param game the game that this player is playing.
 	 */
-	public IMC(Game game) {
-		super(game);
-		x = 0;
-		y = 0;
+	public IMC(Game game, Player.StartSide side) {
+		super(game, side);
 	}
 	
 	public Color getSelectionColour() { return Color.BLUE; }
