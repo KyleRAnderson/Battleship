@@ -62,7 +62,7 @@ public class Square extends Rectangle {
 	 */
 	public void shoot(Ship shooter) {
 		if (currentShip != null) {
-			currentShip.getHit(shooter.damage);
+			currentShip.hit(shooter.player.getDamage());
 		}
 	}
 	
@@ -87,6 +87,7 @@ public class Square extends Rectangle {
 		else if (!currentShip.player.equals(ship.player)) {
 			currentShip = Board.battle(currentShip, ship);
 			shipAdded = currentShip.equals(ship);
+			setFill(DEFAULT_FILL);
 		}
 		
 		return shipAdded;
@@ -152,7 +153,7 @@ public class Square extends Rectangle {
 	}
 	
 	/**
-	 * Gets the x coordinate of the center of this square
+	 * Gets the x coordinate for the pixels of the center of this square
 	 * @return The center x coordinate for this square
 	 */
 	public double getCenterX() {
@@ -160,7 +161,7 @@ public class Square extends Rectangle {
 	}
 	
 	/**
-	 * Gets the y coordinate of the center of this square.
+	 * Gets the y coordinate for the pixels of the center of this square.
 	 * @return The center y coordinate for this square.
 	 */
 	public double getCenterY() {

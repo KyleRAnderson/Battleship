@@ -22,6 +22,11 @@ public class Game {
 	public final ShipManipulation shipManipulation;
 	
 	/**
+	 * The current round number.
+	 */
+	private int turn = 0;
+	
+	/**
 	 * The state of this current game.
 	 */
 	public static enum GameState {
@@ -63,6 +68,30 @@ public class Game {
 		
 		// Begin monitoring input
 		InputHandler.startMonitoring();
+	}
+	
+	/**
+	 * Begins the next round of the game.
+	 */
+	public void nextTurn() {
+		if (isWinner()) end();
+		for (Player player : players) {
+			player.resetShots();
+		}
+		
+		turn++;
+	}
+	
+	public boolean isWinner() {
+		// TODO replace with real code
+		return false;
+	}
+	
+	/**
+	 * Ends this game, displaying the victor
+	 */
+	public void end() {
+		
 	}
 	
 	/**

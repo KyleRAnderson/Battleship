@@ -1,7 +1,7 @@
 package player;
 
 import javafx.scene.paint.Color;
-import main.BattleshipGalacticaMain;
+import main.BattleshipGalactica;
 import main.Game;
 
 import java.util.HashMap;
@@ -22,7 +22,6 @@ public class IMC extends Player {
 					put(RIGHT, KeyCode.RIGHT);
 					put(ENTER, KeyCode.ENTER);
 					put(MOVE, KeyCode.M);
-					put(TOGGLE_SHIP, KeyCode.BACK_SLASH);
 			}};
 	}
 	
@@ -36,5 +35,5 @@ public class IMC extends Player {
 	
 	public Color getSelectionColour() { return Color.BLUE; }
 	
-	public ImageView getIcon() { return new ImageView("file:/" + BattleshipGalacticaMain.RESOURCES_LOCATION + "/imc.png"); }
+	public ImageView getIcon() { return new ImageView("file:/" + BattleshipGalactica.RESOURCES_LOCATION + "/imc.png"); }
 }

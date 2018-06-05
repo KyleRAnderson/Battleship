@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.function.Consumer;
 
 import board.Board;
+import board.Square;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import main.Game;
 import main.InputHandler;
 import manipulation.BoardManipulation;
-import manipulation.ShipManipulation;
 import ships.Ship;
 
 public abstract class Player {
@@ -24,7 +24,12 @@ public abstract class Player {
 	public int x, y;
 	
 	// The starting position of the player
-	private int START_X, START_Y;
+	private final int start_x, start_y;
+	
+	/**
+	 * The amount of damage that this player does when hitting a ship with a cannon ball.
+	 */
+	protected int damage = 50;
 	
 	private StartSide startSide;
 	
@@ -33,15 +38,13 @@ public abstract class Player {
 	 */
 	protected ArrayList<Ship> ships = new ArrayList<Ship>();
 	
-	/**
-	 * The player's selected ship's index.
-	 */
-	protected int selectedShip = 0;
+	protected static int NUM_SHOTS = 4;
+	protected int numShotsLeft = NUM_SHOTS;
 	
 	// The board object on which this player is playing.
 	protected Game game;
 	
-	public static final String UP = "UP", DOWN = "DOWN", LEFT = "LEFT", RIGHT = "RIGHT", ENTER = "ENTER", MOVE = "MOVE", TOGGLE_SHIP = "TOGGLE";
+	public static final String UP = "UP", DOWN = "DOWN", LEFT = "LEFT", RIGHT = "RIGHT", ENTER = "ENTER", MOVE = "MOVE";
 	
 	/**
 	 * Instantiates a player object.
@@ -52,12 +55,12 @@ public abstract class Player {
 		
 		// Set the start position of this player based on the start side.
 		if (side.equals(StartSide.BottomRight)) {
-			START_X = Board.NUM_COLUMNS - 1;
-			START_Y = Board.NUM_ROWS - 1;
+			start_x = Board.NUM_COLUMNS - 1;
+			start_y = Board.NUM_ROWS - 1;
 		}
 		else {
-			START_X = 0;
-			START_Y = 0;
+			start_x = 0;
+			start_y = 0;
 		}
 		
 		InputHandler.addKeyBindings(getKeysUsed(), new Consumer<KeyCode>() {
@@ -78,7 +81,6 @@ public abstract class Player {
 		else if (key.equals(keyBindings.get(DOWN))) game.boardManipulation.move(this, BoardManipulation.MoveDirection.down);
 		else if (key.equals(keyBindings.get(LEFT))) game.boardManipulation.move(this, BoardManipulation.MoveDirection.left);
 		else if (key.equals(keyBindings.get(RIGHT))) game.boardManipulation.move(this, BoardManipulation.MoveDirection.right);
-		else if (key.equals(keyBindings.get(TOGGLE_SHIP))) ShipManipulation.increaseSelectedShip(this);
 	}
 	
 	/**
@@ -99,8 +101,8 @@ public abstract class Player {
 	 * Resets the player's position to the starting position.
 	 */
 	public void resetPosition() {
-		x = START_X;
-		y = START_Y;
+		x = start_x;
+		y = start_y;
 		BoardManipulation.moveTo(this, x, y);
 	}
 	
@@ -133,23 +135,6 @@ public abstract class Player {
 	}
 	
 	/**
-	 * Increases the player's currently selected ship, or goes back to the start
-	 * if it's at the end
-	 */
-	public void increaseSelection() {
-		selectedShip++;
-		if (selectedShip >= ships.size()) selectedShip = 0;
-	}
-	
-	/**
-	 * Gets the ship that the player is currently selecting
-	 * @return The ship that the player is currently selecting.
-	 */
-	public Ship getSelectedShip() {
-		return ships.get(selectedShip);
-	}
-	
-	/**
 	 * Gets all the ships that belong to this player
 	 * @return This playe's ships.
 	 */
@@ -163,5 +148,58 @@ public abstract class Player {
 	 */
 	public StartSide getStartPosition() {
 		return startSide;
+	}
+	
+	/**
+	 * Determines the number of ships that this player has left.
+	 * @return The number of ships that the player has left.
+	 */
+	public int getNumShipsLeft() {
+		int left = 0;
+		
+		// Iterate through each ship and then add to the counter each time we find a ship that's alive.
+		for (Ship ship : ships) {
+			if (!ship.isDestroyed()) left++;
+		}
+		
+		
+		// Return the results.
+		return left;
+	}
+	
+	/**
+	 * Shoots the given square 
+	 * @param squareToShoot
+	 */
+	public void shoot(Square squareToShoot) {
+		// Only shoot at a square if we have shots left and if that square is usable.
+		if (getShotsLeft() > 0 && squareToShoot.isUsable()) { 
+			numShotsLeft--;
+			
+		}
+	}
+	
+	/**
+	 * Determines the number of shots that this player has left for this turn, keeping into account the number of ships
+	 * the player has.
+	 * @return The number of shots that the player has left.
+	 */
+	public int getShotsLeft() {
+		return (getNumShipsLeft() > 0) ? numShotsLeft : 0;
+	}
+	
+	/**
+	 * Resets the number of shots that the player has for this turn.
+	 */
+	public void resetShots() {
+		numShotsLeft = NUM_SHOTS;
+	}
+	
+	/**
+	 * Returns the amount of damage this player's cannon balls do.
+	 * @return The amount of damage this player's cannon balls do.
+	 */
+	public int getDamage() {
+		return damage;
 	}
 }

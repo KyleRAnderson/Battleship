@@ -9,7 +9,7 @@ import javafx.stage.Stage;
  * 2018-06-05
  * ICS3U
  */
-public class BattleshipGalacticaMain extends Application {	
+public class BattleshipGalactica extends Application {	
 	/**
 	 * The file path for the resources used in this program.
 	 */

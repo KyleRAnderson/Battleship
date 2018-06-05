@@ -12,7 +12,7 @@ import javafx.scene.input.KeyEvent;
 public class InputHandler {
 	
 	/**
-	 * Wheter or not this input handler is currently monitoring inputs.
+	 * Whether or not this input handler is currently monitoring inputs.
 	 */
 	private static boolean monitoring;
 	

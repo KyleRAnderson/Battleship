@@ -1,7 +1,7 @@
 package player;
 
 import javafx.scene.paint.Color;
-import main.BattleshipGalacticaMain;
+import main.BattleshipGalactica;
 import main.Game;
 
 import java.util.HashMap;
@@ -21,7 +21,6 @@ public class Militia extends Player{
 				put(RIGHT, KeyCode.D);
 				put(ENTER, KeyCode.TAB);
 				put(MOVE, KeyCode.SHIFT);
-				put(TOGGLE_SHIP, KeyCode.getKeyCode("BACK_QUOTE"));
 			}};
 	}
 	
@@ -35,5 +34,5 @@ public class Militia extends Player{
 	
 	public Color getSelectionColour() { return Color.ORANGE; }
 	
-	public ImageView getIcon() { return new ImageView("file:/" + BattleshipGalacticaMain.RESOURCES_LOCATION + "/militia.png"); }
+	public ImageView getIcon() { return new ImageView("file:/" + BattleshipGalactica.RESOURCES_LOCATION + "/militia.png"); }
 }

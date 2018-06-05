@@ -14,13 +14,7 @@ import ships.Ship;
  * ICS3U
  */
 public class Board extends Parent {
-	private VBox rows = new VBox();
-	
-	/**
-	 * The current turn, 0 to start.
-	 */
-	private int turn = 0;
-	
+	private VBox rows = new VBox();	
 	/**
 	 * The Game object to which this board belongs.
 	 */
@@ -40,17 +34,8 @@ public class Board extends Parent {
 	// The ship selection object, used to select which ship the player is controlling
 	public final ShipSelection[] shipSelectors = new ShipSelection[2];
 	
-	
-	// We need to have states to keep track of what state we're currently in
-	public static enum State {
-		Initial, Battle
-	}
-	
 	// The players playing on this board.
 	Player[] players;
-	
-	// The current state of the board.
-	private static State state = State.Initial;
 	
 	/**
 	 * Instantiates a new board for the given game
@@ -83,7 +68,7 @@ public class Board extends Parent {
 			
 			for (int i = 0; i < NUMBER_OF_SHIPS_PER_PLAYER; i++) {
 				// Make new ship object, giving it the player, the direction and the damage.
-				Ship ship = new Ship(player, (i % 2 == 0) ? Ship.DirectionOfMovement.Diagonal : Ship.DirectionOfMovement.Horizontal, i);
+				Ship ship = new Ship(player, (i % 2 == 0) ? Ship.DirectionOfMovement.Diagonal : Ship.DirectionOfMovement.Horizontal);
 				ships[i * playerNum + 1] = ship;
 				
 				// Add the ship to the player's collection
@@ -131,10 +116,6 @@ public class Board extends Parent {
 		return squareAtPosition;
 	}
 	
-	public static State getState() {
-		return state;
-	}
-	
 	/**
 	 * Gets the game that this board belongs to
 	 * @return The game object for this board.
@@ -159,6 +140,18 @@ public class Board extends Parent {
 	 */
 	public Ship[] getShips() {
 		return ships;
+	}
+	
+	/**
+	 * Determines the distance between the two coordinates in squares, using the distance formula
+	 * @param x1 The first x-coordinate
+	 * @param y1 The first y-coordinate
+	 * @param x2 The second x-coordinate
+	 * @param y2 The second y-coordinate
+	 * @return The distance between the two points in squares.
+	 */
+	public static int getDistanceBetween(int x1, int y1, int x2, int y2) {
+		return (int) Math.round(Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2)));
 	}
 }
 
