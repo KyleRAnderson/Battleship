@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import main.Game;
 import main.InputHandler;
 import manipulation.BoardManipulation;
+import manipulation.ShipManipulation;
 import ships.Ship;
 
 public abstract class Player {
@@ -84,6 +85,7 @@ public abstract class Player {
 		else if (key.equals(keyBindings.get(DOWN))) game.boardManipulation.move(this, BoardManipulation.MoveDirection.down);
 		else if (key.equals(keyBindings.get(LEFT))) game.boardManipulation.move(this, BoardManipulation.MoveDirection.left);
 		else if (key.equals(keyBindings.get(RIGHT))) game.boardManipulation.move(this, BoardManipulation.MoveDirection.right);
+		else if (key.equals(keyBindings.get(ENTER))) ShipManipulation.enterPressed(this);
 	}
 	
 	/**
@@ -212,5 +214,13 @@ public abstract class Player {
 	 */
 	public Ship getSelectedShip() {
 		return selectedShip;
+	}
+	
+	/**
+	 * Reset the player's selected ship to the given ship
+	 * @param ship The ship to select.
+	 */
+	public void setSelectedShip(Ship ship) {
+		selectedShip = ship;
 	}
 }

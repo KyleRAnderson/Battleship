@@ -163,7 +163,7 @@ public class Board extends Parent {
 	 * @param y The y-coordinate
 	 * @return True if it's a valid position, false otherwise.
 	 */
-	public boolean isValidPosition(int x, int y) {
+	public static boolean isValidPosition(int x, int y) {
 		return (0 <= x && x <= NUM_COLUMNS - 1 && 0 <= y && y <= NUM_ROWS - 1);
 	}
 	

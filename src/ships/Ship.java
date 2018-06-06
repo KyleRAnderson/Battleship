@@ -1,5 +1,7 @@
 package ships;
 
+import java.util.ArrayList;
+
 import board.Board;
 import board.Square;
 import javafx.scene.shape.Ellipse;
@@ -61,6 +63,50 @@ public class Ship extends Ellipse {
 		}
 	}
 	
+	/**
+	 * Determines the squares that this ship can possibly move to. 
+	 * @return An arraylist of the squares that this ship can possibly move to.
+	 */
+	public ArrayList<Square> getPossibleSquares() {
+		ArrayList<Square> possibleSquares = null;
+		
+		// If we move diagonally, calculate the squares.
+		if (moveDirection.equals(DirectionOfMovement.Diagonal)) {
+			// Instantiate new ArrayList
+			possibleSquares = new ArrayList<Square>();
+			
+			for (int x = -1; x <= 1; x += 2) {
+				for (int y = -1; y <= 1; y += 2) { 
+					// Determine the coordinates of the square we're looking for and then get the square
+					Square squareToAdd = player.getGame().getBoard().getSquare(currentX + x, currentY + y);
+					// If the square exists, it won't be null and we'll add it to the possible squares.
+					if (!squareToAdd.equals(null)) possibleSquares.add(squareToAdd);
+				}
+			}
+		}
+		// If the ship moves horizontally, do a different calculation for the squares.
+		else if (moveDirection.equals(DirectionOfMovement.Horizontal)) {
+			// Instantiate new ArrayList
+			possibleSquares = new ArrayList<Square>();
+			
+			for (int x = -1; x <= 1; x += 2) {
+				// Determine the coordinates of the square we're looking for and then get the square
+				Square squareToAdd = player.getGame().getBoard().getSquare(currentX + x, currentY);
+				// If the square exists, it won't be null and we'll add it to the possible squares.
+				if (!squareToAdd.equals(null)) possibleSquares.add(squareToAdd);
+			}
+			for (int y = -1; y <= 1; y+= 2) {
+				// Determine the coordinates of the square we're looking for and then get the square
+				Square squareToAdd = player.getGame().getBoard().getSquare(currentX, currentY + y);
+				// If the square exists, it won't be null and we'll add it to the possible squares.
+				if (!squareToAdd.equals(null)) possibleSquares.add(squareToAdd);
+			}
+		}
+			
+		// Return results, even if it's null.
+		return possibleSquares;
+	}
+	
 	public void hit(int damage) {
 		// Subtract what's possible to be subtracted from the health.
 		health -= (damage > health) ? health : damage;
@@ -93,5 +139,14 @@ public class Ship extends Ellipse {
 	 */
 	public int getHealth() {
 		return health;
+	}
+	
+	/**
+	 * Determines if this ship has been placed or not.
+	 * @return True if the ship has been placed, false otherwise.
+	 */
+	public boolean hasBeenPlaced() {
+		// Just make sure that the position is valid.
+		return Board.isValidPosition(currentX, currentY);
 	}
 }
