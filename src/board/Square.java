@@ -113,7 +113,7 @@ public class Square extends Rectangle {
 	 * this square it's not usable.
 	 */
 	public boolean isUsable() {
-		return currentShip.isDestroyed();
+		return currentShip == null || !currentShip.isDestroyed();
 	}
 	
 	/**

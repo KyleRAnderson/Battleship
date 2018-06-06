@@ -43,7 +43,7 @@ public class BoardManipulation {
 		// Get the player's board
 		Board board = player.getGame().getBoard();
 		// Determine if the supplied coordinates are valid, and if so continue
-		if (board.isValidPosition(x, y)) {
+		if (Board.isValidPosition(x, y)) {
 			// Get the old square before we move so we can refresh it
 			Square oldSquare = board.getSquare(player.x, player.y);
 

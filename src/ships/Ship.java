@@ -2,7 +2,6 @@ package ships;
 
 import java.util.ArrayList;
 
-import board.Board;
 import board.Square;
 import javafx.scene.shape.Ellipse;
 import player.Player;
@@ -24,14 +23,13 @@ public class Ship extends Ellipse {
 	 */
 	public static int DEFAULT_DAMAGE = 50;
 	
+	public static final double SIZE_X = 15, SIZE_Y = 5;
+	
 	// The player that this ship belongs to.
 	public final Player player;
 	
 	// The current position of the game piece.
 	private Square currentPosition;
-	
-	// The current position of the ship on the grid.
-	private int currentX, currentY;
 	
 	// The direction that this type of ship can move in.
 	private final DirectionOfMovement moveDirection;
@@ -47,6 +45,10 @@ public class Ship extends Ellipse {
 	public Ship(Player player, DirectionOfMovement moveDirection) {
 		this.player = player;
 		this.moveDirection = moveDirection;
+		
+		setRadiusX(SIZE_X);
+		setRadiusY(SIZE_Y);
+		setFill(player.getSelectionColour());
 	}
 	
 	/**
@@ -70,39 +72,41 @@ public class Ship extends Ellipse {
 	public ArrayList<Square> getPossibleSquares() {
 		ArrayList<Square> possibleSquares = null;
 		
-		// If we move diagonally, calculate the squares.
-		if (moveDirection.equals(DirectionOfMovement.Diagonal)) {
-			// Instantiate new ArrayList
-			possibleSquares = new ArrayList<Square>();
-			
-			for (int x = -1; x <= 1; x += 2) {
-				for (int y = -1; y <= 1; y += 2) { 
+		if (currentPosition != null) {
+			// If we move diagonally, calculate the squares.
+			if (moveDirection.equals(DirectionOfMovement.Diagonal)) {
+				// Instantiate new ArrayList
+				possibleSquares = new ArrayList<Square>();
+				
+				for (int x = -1; x <= 1; x += 2) {
+					for (int y = -1; y <= 1; y += 2) { 
+						// Determine the coordinates of the square we're looking for and then get the square
+						Square squareToAdd = player.getGame().getBoard().getSquare(currentPosition.xCoordinate + x, currentPosition.yCoordinate + y);
+						// If the square exists, it won't be null and we'll add it to the possible squares.
+						if (!squareToAdd.equals(null)) possibleSquares.add(squareToAdd);
+					}
+				}
+			}
+			// If the ship moves horizontally, do a different calculation for the squares.
+			else if (moveDirection.equals(DirectionOfMovement.Horizontal)) {
+				// Instantiate new ArrayList
+				possibleSquares = new ArrayList<Square>();
+				
+				for (int x = -1; x <= 1; x += 2) {
 					// Determine the coordinates of the square we're looking for and then get the square
-					Square squareToAdd = player.getGame().getBoard().getSquare(currentX + x, currentY + y);
+					Square squareToAdd = player.getGame().getBoard().getSquare(currentPosition.xCoordinate + x, currentPosition.yCoordinate);
+					// If the square exists, it won't be null and we'll add it to the possible squares.
+					if (!squareToAdd.equals(null)) possibleSquares.add(squareToAdd);
+				}
+				for (int y = -1; y <= 1; y+= 2) {
+					// Determine the coordinates of the square we're looking for and then get the square
+					Square squareToAdd = player.getGame().getBoard().getSquare(currentPosition.xCoordinate, currentPosition.yCoordinate + y);
 					// If the square exists, it won't be null and we'll add it to the possible squares.
 					if (!squareToAdd.equals(null)) possibleSquares.add(squareToAdd);
 				}
 			}
 		}
-		// If the ship moves horizontally, do a different calculation for the squares.
-		else if (moveDirection.equals(DirectionOfMovement.Horizontal)) {
-			// Instantiate new ArrayList
-			possibleSquares = new ArrayList<Square>();
-			
-			for (int x = -1; x <= 1; x += 2) {
-				// Determine the coordinates of the square we're looking for and then get the square
-				Square squareToAdd = player.getGame().getBoard().getSquare(currentX + x, currentY);
-				// If the square exists, it won't be null and we'll add it to the possible squares.
-				if (!squareToAdd.equals(null)) possibleSquares.add(squareToAdd);
-			}
-			for (int y = -1; y <= 1; y+= 2) {
-				// Determine the coordinates of the square we're looking for and then get the square
-				Square squareToAdd = player.getGame().getBoard().getSquare(currentX, currentY + y);
-				// If the square exists, it won't be null and we'll add it to the possible squares.
-				if (!squareToAdd.equals(null)) possibleSquares.add(squareToAdd);
-			}
-		}
-			
+
 		// Return results, even if it's null.
 		return possibleSquares;
 	}
@@ -123,6 +127,13 @@ public class Ship extends Ellipse {
 		health = 0;
 		// Tell the square that we were on that we were sunk.
 		currentPosition.shipDestroyed(this);
+	}
+	
+	/**
+	 * Carries out the proper actions that need to take place if the ship is removed from the board.
+	 */
+	public void removeFromBoard() {
+		currentPosition = null;
 	}
 	
 	/**
@@ -147,6 +158,14 @@ public class Ship extends Ellipse {
 	 */
 	public boolean hasBeenPlaced() {
 		// Just make sure that the position is valid.
-		return Board.isValidPosition(currentX, currentY);
+		return currentPosition != null;
+	}
+	
+	/**
+	 * Gets the square location of this ship
+	 * @return The square location of this ship
+	 */
+	public Square getSquare() {
+		return currentPosition;
 	}
 }
