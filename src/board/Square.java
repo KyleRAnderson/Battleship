@@ -167,4 +167,28 @@ public class Square extends Rectangle {
 	public double getCenterY() {
 		return getY() + getWidth() / 2;
 	}
+	
+	/**
+	 * Highlights this square with the player's highlight colour
+	 * @param player The player highlighting this square
+	 */
+	public void highlight(Player player) {
+		setStroke(player.getSelectionColour());
+	}
+	
+	/**
+	 * Un-highlights this square, resetting its properties.
+	 */
+	public void clearHighlight() {
+		setStroke(DEFAULT_STROKE);
+	}
+	
+	/**
+	 * Determines if the given ship can move to this square
+	 * @param ship The ship that wishes to move to this square
+	 * @return True if it can move, false otherwise.
+	 */
+	public boolean canMoveToSquare(Ship ship) {
+		return currentShip == null || !currentShip.player.equals(ship.player);
+	}
 }

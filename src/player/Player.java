@@ -12,7 +12,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import main.Game;
 import main.InputHandler;
-import manipulation.BoardManipulation;
+import manipulation.PlayerManipulation;
 import manipulation.ShipManipulation;
 import ships.Ship;
 
@@ -42,13 +42,13 @@ public abstract class Player {
 	// The ship currently selected by this player
 	protected Ship selectedShip;
 	
-	protected static int NUM_SHOTS = 4;
-	protected int numShotsLeft = NUM_SHOTS;
+	protected static int NUM_SHOTS = 4, NUM_MOVES = 1;
+	protected int numShotsLeft = NUM_SHOTS, numMovesLeft = NUM_MOVES ;
 	
 	// The board object on which this player is playing.
 	protected Game game;
 	
-	public static final String UP = "UP", DOWN = "DOWN", LEFT = "LEFT", RIGHT = "RIGHT", ENTER = "ENTER", MOVE = "MOVE", TOGGLE_HIDE = "TOGGLE_HIDE";
+	public static final String UP = "UP", DOWN = "DOWN", LEFT = "LEFT", RIGHT = "RIGHT", ENTER = "ENTER", MOVE = "MOVE", TOGGLE_HIDE = "TOGGLE_HIDE", CANCEL = "CANCEL";
 	
 	/**
 	 * Instantiates a player object.
@@ -81,12 +81,13 @@ public abstract class Player {
 	 */
 	private void onKeyPressed(KeyCode key) {
 		HashMap<String, KeyCode> keyBindings = getKeyBindings();
-		if (key.equals(keyBindings.get(UP))) game.boardManipulation.move(this, BoardManipulation.MoveDirection.up);
-		else if (key.equals(keyBindings.get(DOWN))) game.boardManipulation.move(this, BoardManipulation.MoveDirection.down);
-		else if (key.equals(keyBindings.get(LEFT))) game.boardManipulation.move(this, BoardManipulation.MoveDirection.left);
-		else if (key.equals(keyBindings.get(RIGHT))) game.boardManipulation.move(this, BoardManipulation.MoveDirection.right);
+		if (key.equals(keyBindings.get(UP))) game.boardManipulation.move(this, Board.MoveDirection.up);
+		else if (key.equals(keyBindings.get(DOWN))) game.boardManipulation.move(this, Board.MoveDirection.down);
+		else if (key.equals(keyBindings.get(LEFT))) game.boardManipulation.move(this, Board.MoveDirection.left);
+		else if (key.equals(keyBindings.get(RIGHT))) game.boardManipulation.move(this, Board.MoveDirection.right);
 		else if (key.equals(keyBindings.get(ENTER))) ShipManipulation.enterPressed(this);
 		else if (key.equals(keyBindings.get(TOGGLE_HIDE))) toggleHide();
+		else if (key.equals(keyBindings.get(CANCEL))) setSelectedShip(null);
 	}
 	
 	/**
@@ -109,7 +110,7 @@ public abstract class Player {
 	public void resetPosition() {
 		x = start_x;
 		y = start_y;
-		BoardManipulation.moveTo(this, x, y);
+		PlayerManipulation.moveTo(this, x, y);
 	}
 	
 	/**
@@ -204,10 +205,18 @@ public abstract class Player {
 	}
 	
 	/**
-	 * Resets the number of shots that the player has for this turn.
+	 * Determines if the given player can still shoot
+	 * @return True if the player can still shoot, false otherwise
 	 */
-	public void resetShots() {
+	public boolean canShoot() { return getShotsLeft() > 0; }
+	
+	/**
+	 * Resets the number of shots that the player has for this turn as well as the number of moves
+	 * in preparation for the next round.
+	 */
+	public void resetForNextRound() {
 		numShotsLeft = NUM_SHOTS;
+		numMovesLeft = NUM_MOVES;
 	}
 	
 	/**
@@ -231,7 +240,18 @@ public abstract class Player {
 	 * @param ship The ship to select.
 	 */
 	public void setSelectedShip(Ship ship) {
+		// Call selection changed function (usually would be an event).
+		PlayerManipulation.shipSelectionChanged(selectedShip, ship, this);
+		
 		selectedShip = ship;
+	}
+	
+	/**
+	 * Determines whether or not this player has selected a ship
+	 * @return True if the player has a ship selected, false otherwise.
+	 */
+	public boolean hasSelectedShip() {
+		return selectedShip != null;
 	}
 	
 	/**
@@ -259,4 +279,38 @@ public abstract class Player {
 			ship.setVisible(!hidden);
 		}
 	}
+	
+	/**
+	 * Moves the player's selection to the given coordinates
+	 * @param x The new x coordinate
+	 * @param y The new y coordinate
+	 */
+	public void moveTo(int x, int y) {
+		this.x = x;
+		this.y = y;
+		// Nullify the selected ship.
+		setSelectedShip(null);
+	}
+	
+	/**
+	 * Called when one of this player's ships is moved in order to decrease the 
+	 * move counter.
+	 */
+	public void shipMoved() {
+		numMovesLeft--;
+	}
+	
+	/**
+	 * Determines the amount of ship moves this player has left
+	 * @return The number of moves that this player has left in the turn.
+	 */
+	public int getMovesLeft() {
+		return numMovesLeft;
+	}
+	
+	/**
+	 * Determines if the player can still move his/her ships
+	 * @return True if the player can still move his/her ships, false otherwise.
+	 */
+	public boolean canMove() { return getMovesLeft() > 0; }
 }

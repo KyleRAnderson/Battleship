@@ -22,6 +22,7 @@ public class Militia extends Player{
 				put(ENTER, KeyCode.TAB);
 				put(MOVE, KeyCode.SHIFT);
 				put(TOGGLE_HIDE, KeyCode.Q);
+				put(CANCEL, KeyCode.ESCAPE);
 			}};
 	}
 	

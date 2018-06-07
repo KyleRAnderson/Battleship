@@ -3,31 +3,24 @@ package manipulation;
 import board.Board;
 import board.Square;
 import player.Player;
+import ships.Ship;
 
-public class BoardManipulation {
-	
-	/**
-	 * The possible directions for the player to move.
-	 */
-	public static enum MoveDirection {
-		up, down, left, right
-	}
-	
+public class PlayerManipulation {	
 	/**
 	 * Moves the cursor selection of the player one square in the given direction.
 	 * @param player The player whose cursor needs to be moved.
 	 * @param direction The direction of the movement.
 	 */
-	public void move(Player player, MoveDirection direction) {
+	public void move(Player player, Board.MoveDirection direction) {
 		
 		// Determine if the player has a ship selected. If they do, we're moving the ship, not the selection
-		if (player.getSelectedShip() == null) {
+		if (!player.hasSelectedShip()) {
 			int newX = player.x, newY = player.y;
 			// Make sure that it's possible to move in the direction, then move in that direction.
-			if (direction.equals(MoveDirection.left) && player.x > 0) newX--;
-			else if (direction.equals(MoveDirection.right) && player.x < Board.NUM_COLUMNS - 1) newX++;
-			else if (direction.equals(MoveDirection.up) && player.y > 0) newY--;
-			else if (direction.equals(MoveDirection.down) && player.y < Board.NUM_ROWS - 1) newY++;
+			if (direction.equals(Board.MoveDirection.left) && player.x > 0) newX--;
+			else if (direction.equals(Board.MoveDirection.right) && player.x < Board.NUM_COLUMNS - 1) newX++;
+			else if (direction.equals(Board.MoveDirection.up) && player.y > 0) newY--;
+			else if (direction.equals(Board.MoveDirection.down) && player.y < Board.NUM_ROWS - 1) newY++;
 			
 			// Only bother to do something if the player's position has changed.
 			if (newX != player.x || newY != player.y) { 
@@ -56,8 +49,7 @@ public class BoardManipulation {
 			Square oldSquare = board.getSquare(player.x, player.y);
 
 			// Change the player's coordinates
-			player.x = x;
-			player.y = y;
+			player.moveTo(x, y);
 			
 			// Get the new square to which the player belongs
 			Square newSquare = board.getSquare(x, y);
@@ -66,5 +58,14 @@ public class BoardManipulation {
 			oldSquare.refreshSelection();
 			newSquare.refreshSelection();
 		}
+	}
+	
+	/**
+	 * Called by the player object when the selected ship is changed.
+	 */
+	public static void shipSelectionChanged(Ship oldSelection, Ship newSelection, Player player) {
+		// Clear the old ship's selection, and set the new ship's selection
+		if (oldSelection != null) ShipManipulation.selectShip(oldSelection, false);
+		if (newSelection != null) ShipManipulation.selectShip(newSelection, true);
 	}
 }

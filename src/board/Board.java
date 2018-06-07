@@ -36,9 +36,16 @@ public class Board extends Parent {
 	private final Ship[] ships = new Ship[NUMBER_OF_SHIPS_PER_PLAYER * 2];
 	
 	/**
+	 * The possible directions for things to move.
+	 */
+	public static enum MoveDirection {
+		up, down, left, right
+	}
+	
+	/**
 	 * The label for the current turn
 	 */
-	private final Text turnLabel = new Text();
+	private final Text statusLabel = new Text();
 	/**
 	 * The message to be displayed on screen to help the player.
 	 */
@@ -66,17 +73,17 @@ public class Board extends Parent {
 		getChildren().add(root);
 		
 		// Set up the turn label at the top of the board.
-		turnLabel.setFont(BattleshipGalactica.HEADING_FONT);
-		turnLabel.setFill(Color.RED);
-		GridPane.setConstraints(turnLabel, 1, 0);
+		statusLabel.setFont(BattleshipGalactica.HEADING_FONT);
+		statusLabel.setFill(Color.RED);
+		GridPane.setConstraints(statusLabel, 1, 0);
 		
 		// Now set up the message text
-		message.setFont(BattleshipGalactica.HEADING_FONT);
+		message.setFont(BattleshipGalactica.CONTENT_FONT);
 		message.setFill(Color.BLACK);
 		GridPane.setConstraints(message, 0, 0);
 		
 		// Add the turn indicator and the message to the screen.
-		root.setTop(new HBox(turnLabel, message));
+		root.setTop(new HBox(statusLabel, message));
 		
 		// Set up a gridpane for the squares
 		GridPane squaresPane = new GridPane();
@@ -104,7 +111,7 @@ public class Board extends Parent {
 			for (int i = 0; i < NUMBER_OF_SHIPS_PER_PLAYER; i++) {
 				// Make new ship object, giving it the player, the direction and the damage.
 				Ship ship = new Ship(player, (i % 2 == 0) ? Ship.DirectionOfMovement.Diagonal : Ship.DirectionOfMovement.Horizontal);
-				ships[i * playerNum + 1] = ship;
+				ships[playerNum * NUMBER_OF_SHIPS_PER_PLAYER + i] = ship;
 				
 				// Add the ship to the player's collection
 				player.addShip(ship);
@@ -188,8 +195,8 @@ public class Board extends Parent {
 	 * Sets the turn message that is displayed on the board indicating which turn number it is.
 	 * @param turn The current turn.
 	 */
-	public void setTurn(int turn) {
-		turnLabel.setText("TURN: " + turn);
+	public void setStatus(String status) {
+		statusLabel.setText("STATUS: " + status);
 	}
 	
 	/**
@@ -225,6 +232,16 @@ public class Board extends Parent {
 			// Tell the square that that ship was removed.
 			square.removeShip(ship);	
 		}		
+	}
+	
+	/**
+	 * Moves the given ship from its old position to its new position.
+	 * @param ship The ship to move
+	 * @param oldPosition The old position that the ship was at.
+	 */
+	public void moveShip(Ship ship) {
+		((GridPane) root.getCenter()).getChildren().remove(ship);
+		addShip(ship);
 	}
 }
 

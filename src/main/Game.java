@@ -1,11 +1,12 @@
 package main;
 
 import board.Board;
-import manipulation.BoardManipulation;
+import manipulation.PlayerManipulation;
 import manipulation.ShipManipulation;
 import player.IMC;
 import player.Militia;
 import player.Player;
+import ships.Ship;
 
 /**
  * Game object that represents a game being played
@@ -18,7 +19,7 @@ public class Game {
 	 * The board that belongs to this game.
 	 */
 	Board board;
-	public final BoardManipulation boardManipulation;
+	public final PlayerManipulation boardManipulation;
 	public final ShipManipulation shipManipulation;
 	
 	/**
@@ -56,7 +57,7 @@ public class Game {
 		// Make the board
 		board = new Board(this);
 		
-		boardManipulation = new BoardManipulation();
+		boardManipulation = new PlayerManipulation();
 		shipManipulation = new ShipManipulation();
 	}
 	
@@ -72,6 +73,13 @@ public class Game {
 		// Begin monitoring input
 		InputHandler.startMonitoring();
 		
+		startPlacement();
+	}
+	
+	/**
+	 * Begin the placement stage of the game
+	 */
+	private void startPlacement() {
 		// Set the state to ship placement.
 		state = GameState.ShipPlacement;
 		
@@ -80,16 +88,31 @@ public class Game {
 	}
 	
 	/**
+	 * Begin the firing stage of the game
+	 */
+	private void startFiring() {
+		state = GameState.Firing;
+		nextTurn();
+	}
+	
+	/**
+	 * Begin the movement stage of the game.
+	 */
+	private void startMovement() {
+		state = GameState.Movement;
+	}
+	
+	/**
 	 * Begins the next round of the game.
 	 */
 	public void nextTurn() {
 		if (isWinner()) end();
 		for (Player player : players) {
-			player.resetShots();
+			player.resetForNextRound();
 		}
 		
 		turn++;
-		board.setTurn(turn);
+		board.setStatus("Playing turn " + turn);
 	}
 	
 	public boolean isWinner() {
@@ -126,5 +149,48 @@ public class Game {
 	 */
 	public GameState getState() {
 		return state;
+	}
+
+	/**
+	 * Refreshes the game's current state.
+	 */
+	public void refreshState() {
+		GameState state = getState();
+		// If we're in ship placement, check if all ships for each player have been placed.
+		if (state.equals(GameState.ShipPlacement)) {
+			boolean unplacedShip = false;
+			for (Ship ship : getBoard().getShips()) {
+				if (!ship.hasBeenPlaced()) {
+					unplacedShip = true;
+					break;
+				}
+			}
+			
+			// If there are no unplaced ships, let's move on to first round of firing. 
+			if (!unplacedShip) { 
+				startFiring();
+			}
+		}
+		else if (state.equals(GameState.Firing)) {
+			boolean canFire = false;
+			// Iterate through each player and see if any of them can stil move
+			for (Player player : getPlayers()) {
+				canFire = player.canShoot();
+				if (canFire) break;
+			}
+			
+			if (!canFire) startMovement();
+		}
+		else if (state.equals(GameState.Movement)) {
+			boolean canMove = false;
+			// Iterate through each player and see if any of them can stil move
+			for (Player player : getPlayers()) {
+				canMove = player.canMove();
+				if (canMove) break;
+			}
+			
+			if (!canMove) startFiring();
+		}
+		
 	}
 }

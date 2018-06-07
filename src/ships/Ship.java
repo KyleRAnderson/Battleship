@@ -2,8 +2,10 @@ package ships;
 
 import java.util.ArrayList;
 
+import board.Board;
 import board.Square;
 import javafx.scene.shape.Ellipse;
+import manipulation.ShipManipulation;
 import player.Player;
 
 /**
@@ -56,8 +58,34 @@ public class Ship extends Ellipse {
 	}
 	
 	/**
+	 * Moves the piece to the provided new position. 
+	 * @param direction The direction in which to move the ship.
+	 */
+	public void move(Board.MoveDirection direction) {
+		// Determine what the square in front is.
+		Square newPosition = getSquareInDirection(direction);
+		
+		// Do null check before proceeding
+		if (newPosition != null && canMove()) {
+			// Before we move, clear selection
+			ShipManipulation.selectShip(this, false);
+			// Move to new position
+			move(newPosition);
+			// Notify player that ship was moved.
+			player.shipMoved();
+			
+//			// TODO get working somehow Now begin the nice transition for what we're doing.
+//			TranslateTransition transition = new TranslateTransition(Duration.millis(1000), this);
+//			transition.setByX(1);
+//			transition.setByY(1);
+//			transition.play();
+			player.getGame().getBoard().moveShip(this);
+		}
+	}
+	
+	/**
 	 * Moves the piece to the provided new position.
-	 * @prarma newPosition The new position of the ship
+	 * @param newPosition The new position of the ship
 	 */
 	public void move(Square newPosition) {
 		// Attempt to add this ship to the given position.
@@ -67,6 +95,67 @@ public class Ship extends Ellipse {
 		if (didAdd) {
 			currentPosition = newPosition;
 		}
+	}
+	/**
+	 * Determine if this ship can move, legally
+	 * @return True if the ship is allowed to move, false otherwise.
+	 */
+	public boolean canMove() {
+		return player.getMovesLeft() > 0;
+	}
+	
+	private Square getSquareInDirection(Board.MoveDirection direction) {
+		// New coordinates for this ship, in theory.
+		int newX = -1, newY = -1;
+		
+		if (moveDirection.equals(DirectionOfMovement.Diagonal)) {
+			// Going up will always be the top left possible square.
+			if (direction.equals(Board.MoveDirection.up)) {
+				newX = currentPosition.xCoordinate - 1;
+				newY = currentPosition.yCoordinate - 1;
+			}
+			// Going down is the bottom right possible square
+			else if (direction.equals(Board.MoveDirection.down)) {
+				newX = currentPosition.xCoordinate + 1;
+				newY = currentPosition.yCoordinate + 1;
+			}
+			// The right option is the top right square.
+			else if (direction.equals(Board.MoveDirection.right)) {
+				newX = currentPosition.xCoordinate + 1;
+				newY = currentPosition.yCoordinate - 1;
+			}
+			// Left is the bottom left square.
+			else if (direction.equals(Board.MoveDirection.left)) {
+				newX = currentPosition.xCoordinate - 1;
+				newY = currentPosition.yCoordinate + 1;
+			}
+		}
+		else {
+			// Going up will be upwards square
+			if (direction.equals(Board.MoveDirection.up)) {
+				newX = currentPosition.xCoordinate;
+				newY = currentPosition.yCoordinate - 1;
+			}
+			// Going down is the bottom possible square
+			else if (direction.equals(Board.MoveDirection.down)) {
+				newX = currentPosition.xCoordinate;
+				newY = currentPosition.yCoordinate + 1;
+			}
+			// The right option is the right square.
+			else if (direction.equals(Board.MoveDirection.right)) {
+				newX = currentPosition.xCoordinate + 1;
+				newY = currentPosition.yCoordinate;
+			}
+			// Left is the left square.
+			else if (direction.equals(Board.MoveDirection.left)) {
+				newX = currentPosition.xCoordinate - 1;
+				newY = currentPosition.yCoordinate;
+			}
+		}
+		// Get the square at the new coordinates.
+		Square newSquare = player.getGame().getBoard().getSquare(newX, newY);
+		
+		return newSquare;
 	}
 	
 	/**
@@ -87,7 +176,7 @@ public class Ship extends Ellipse {
 						// Determine the coordinates of the square we're looking for and then get the square
 						Square squareToAdd = player.getGame().getBoard().getSquare(currentPosition.xCoordinate + x, currentPosition.yCoordinate + y);
 						// If the square exists, it won't be null and we'll add it to the possible squares.
-						if (!squareToAdd.equals(null)) possibleSquares.add(squareToAdd);
+						if (squareToAdd != null && squareToAdd.canMoveToSquare(this)) possibleSquares.add(squareToAdd);
 					}
 				}
 			}
@@ -100,13 +189,13 @@ public class Ship extends Ellipse {
 					// Determine the coordinates of the square we're looking for and then get the square
 					Square squareToAdd = player.getGame().getBoard().getSquare(currentPosition.xCoordinate + x, currentPosition.yCoordinate);
 					// If the square exists, it won't be null and we'll add it to the possible squares.
-					if (!squareToAdd.equals(null)) possibleSquares.add(squareToAdd);
+					if (squareToAdd != null) possibleSquares.add(squareToAdd);
 				}
 				for (int y = -1; y <= 1; y+= 2) {
 					// Determine the coordinates of the square we're looking for and then get the square
 					Square squareToAdd = player.getGame().getBoard().getSquare(currentPosition.xCoordinate, currentPosition.yCoordinate + y);
 					// If the square exists, it won't be null and we'll add it to the possible squares.
-					if (!squareToAdd.equals(null)) possibleSquares.add(squareToAdd);
+					if (squareToAdd != null && squareToAdd.canMoveToSquare(this)) possibleSquares.add(squareToAdd);
 				}
 			}
 		}

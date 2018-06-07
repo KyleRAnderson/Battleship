@@ -62,9 +62,13 @@ public class ShipManipulation {
 	 * @param player The player to move the ship of
 	 * @param direction The direction to move the ship.
 	 */
-	public static void moveShip(Player player, BoardManipulation.MoveDirection direction) {
-		if (player.getSelectedShip() != null) {
-			
+	public static void moveShip(Player player, Board.MoveDirection direction) {
+		// Make sure the player has selected a ship before we try to move it.
+		if (player.hasSelectedShip()) {
+			// Attempt to move the ship in this round.
+			player.getSelectedShip().move(direction);
+			// Nullify the player's selected ship.
+			player.setSelectedShip(null);
 		}
 	}
 	
@@ -79,6 +83,9 @@ public class ShipManipulation {
 		if (!ship.hasBeenPlaced() && squareAtPosition.getShipOnSquare() == null) {
 			ship.move(board.getSquare(ship.player.x, ship.player.y));
 			board.addShip(ship);
+			
+			// Refresh the game state.
+			board.getGame().refreshState();
 		}
 	}
 	
@@ -92,6 +99,23 @@ public class ShipManipulation {
 		if (shipToRemove.getSquare() != null) {
 			board.removeShip(shipToRemove);
 			shipToRemove.removeFromBoard();
+			
+			// Refresh the game state
+			board.getGame().refreshState();
+		}
+	}
+	
+	/**
+	 * Selects or deselects the squares that this ship can possible travel to.
+	 * @param ship The ship to select or deselect the squares of 
+	 * @param select Set to true to select, false to deselect.
+	 */
+	public static void selectShip(Ship ship, boolean select) {
+		// Iterate through each of the ship's possible squares.
+		for (Square square : ship.getPossibleSquares()) {
+			// Highlight if necessary, or clear highlight if requested.
+			if (select) square.highlight(ship.player);
+			else square.clearHighlight();
 		}
 	}
 }

@@ -21,7 +21,7 @@ public class BattleshipGalactica extends Application {
 	/**
 	 * The font for all headings in the game.
 	 */
-	public static final Font HEADING_FONT = Font.font("Impact", 20);
+	public static final Font HEADING_FONT = Font.font("Impact", 20), CONTENT_FONT = Font.font("Impact", 10);
 	
 	/**
 	 * 

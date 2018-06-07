@@ -23,6 +23,7 @@ public class IMC extends Player {
 					put(ENTER, KeyCode.ENTER);
 					put(MOVE, KeyCode.M);
 					put(TOGGLE_HIDE, KeyCode.H);
+					put (CANCEL, KeyCode.BACK_SPACE);
 			}};
 	}
 	
