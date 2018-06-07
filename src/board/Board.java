@@ -2,9 +2,9 @@ package board;
 
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import main.BattleshipGalactica;
@@ -19,7 +19,6 @@ import ships.Ship;
  * ICS3U
  */
 public class Board extends Parent {
-	private VBox rows = new VBox();	
 	/**
 	 * The Game object to which this board belongs.
 	 */
@@ -49,9 +48,9 @@ public class Board extends Parent {
 	Player[] players;
 	
 	// The grid that controls the way things are laid out.
-	GridPane grid;
+	BorderPane root;
 	
-	private static final double GAP = 10, PADDING = 20;
+	private static final double PADDING = 15;
 	
 	/**
 	 * Instantiates a new board for the given game
@@ -62,11 +61,9 @@ public class Board extends Parent {
 		this.game = game;
 		
 		// Set up the grid pane.
-		grid = new GridPane();
-		grid.setHgap(GAP);
-		grid.setVgap(GAP);
-		grid.setPadding(new Insets(PADDING, PADDING, PADDING, PADDING));
-		getChildren().add(grid);
+		root = new BorderPane();
+		root.setPadding(new Insets(PADDING, PADDING, PADDING, PADDING));
+		getChildren().add(root);
 		
 		// Set up the turn label at the top of the board.
 		turnLabel.setFont(BattleshipGalactica.HEADING_FONT);
@@ -79,26 +76,26 @@ public class Board extends Parent {
 		GridPane.setConstraints(message, 0, 0);
 		
 		// Add the turn indicator and the message to the screen.
-		grid.getChildren().addAll(turnLabel, message);
+		root.setTop(new HBox(turnLabel, message));
+		
+		// Set up a gridpane for the squares
+		GridPane squaresPane = new GridPane();
+		squaresPane.setHgap(0);
+		squaresPane.setVgap(0);
+		squaresPane.setPadding(new Insets(0, 0, 0, 0));
+		root.setCenter(squaresPane);
 		
 		// Let's get the squares objects rolling. Populate the squares array.
 		for (int y = 0; y < NUM_ROWS; y++) {
-			HBox row = new HBox();
 			for (int x = 0; x < NUM_COLUMNS; x++) {
 				// Make a new square object for this position.
 				Square square = new Square(x, y, this);
 				// Add the square to the row
-				row.getChildren().add(square);
+				squaresPane.add(square, x, y);
 				// Put the square in the squares array
 				squares[x][y] = square;
 			}
-			// Add the row to the rows.
-			rows.getChildren().add(row);
 		}
-		// Set constraints for the board grid itself.
-		GridPane.setConstraints(rows, 0, 1, 2, 1);
-		// Add the board to the children.
-		grid.getChildren().add(rows);
 		
 		// Now generate ships for each player
 		for (int playerNum = 0; playerNum < 2; playerNum++) {
@@ -163,7 +160,7 @@ public class Board extends Parent {
 	 * @param y The y-coordinate
 	 * @return True if it's a valid position, false otherwise.
 	 */
-	public boolean isValidPosition(int x, int y) {
+	public static boolean isValidPosition(int x, int y) {
 		return (0 <= x && x <= NUM_COLUMNS - 1 && 0 <= y && y <= NUM_ROWS - 1);
 	}
 	
@@ -201,6 +198,33 @@ public class Board extends Parent {
 	 */
 	public void setMessage(String message) {
 		this.message.setText(message);
+	}
+	
+	/**
+	 * Adds a ship to the board.
+	 * @param ship The ship to add to the board.
+	 */
+	public void addShip(Ship ship) {
+		Square squareToAddTo = ship.getSquare();
+		// Now actually add the ship to the GUI
+		((GridPane) root.getCenter()).add(ship, squareToAddTo.xCoordinate, squareToAddTo.yCoordinate);
+		// Tell the square that a ship has been added on its position
+		squareToAddTo.addShip(ship);
+	}
+	
+	/**
+	 * Removes the given ship from the board. Can only be called during the ship placement stage.
+	 * @param ship The ship to remove from the board.
+	 */
+	public void removeShip(Ship ship) {
+		// Make sure the square property of the ship isn't null
+		if (ship.getSquare() != null && game.getState().equals(Game.GameState.ShipPlacement)) {
+			Square square = ship.getSquare();
+			// Remove the ship from the gridpane.
+			((GridPane) root.getCenter()).getChildren().remove(ship);
+			// Tell the square that that ship was removed.
+			square.removeShip(ship);	
+		}		
 	}
 }
 

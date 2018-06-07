@@ -30,7 +30,7 @@ public class Game {
 	 * The state of this current game.
 	 */
 	public static enum GameState {
-		ShipPlacement, Firing, Player1Movement, Player2Movement;  
+		ShipPlacement, Firing, Movement;  
 	}
 	
 	// The current game state. Start it in ship placement by default.
