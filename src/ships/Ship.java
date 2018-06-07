@@ -46,9 +46,13 @@ public class Ship extends Ellipse {
 		this.player = player;
 		this.moveDirection = moveDirection;
 		
+		// Set up the size and fill of the ship.
 		setRadiusX(SIZE_X);
 		setRadiusY(SIZE_Y);
 		setFill(player.getSelectionColour());
+		
+		// If it's a diagonal ship, rotate it so the user knows that it is.
+		if (moveDirection.equals(DirectionOfMovement.Diagonal)) setRotate(45);
 	}
 	
 	/**

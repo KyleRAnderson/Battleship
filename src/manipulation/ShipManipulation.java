@@ -7,6 +7,11 @@ import player.Player;
 import ships.Ship;
 
 public class ShipManipulation {
+	
+	/**
+	 * The distance that the ship has to be within when it starts the game.
+	 */
+	public final static int SHIP_START_DISTANCE = 3;
 
 	/**
 	 * Called when the given player presses the enter key
@@ -16,22 +21,50 @@ public class ShipManipulation {
 		// Get the player's game as well as their board so that we can begin doing stuff.
 		Game playersGame = player.getGame();
 		Board board = playersGame.getBoard();
+		Square selectedSquare = board.getSquare(player.x, player.y);
 		
+		Game.GameState state = playersGame.getState();
 		// If we're in the ship placement stage, place one of the player's ships.
-		if (playersGame.getState().equals(Game.GameState.ShipPlacement)) {
+		if (state.equals(Game.GameState.ShipPlacement)) {
+			int playerStartXCoordinate = player.getStartSquare().xCoordinate;
 			
-			// Make sure there's no ship on that square before the player adds it to that square.
-			Ship shipOnSelectedSquare = board.getSquare(player.x, player.y).getShipOnSquare();
-			if (shipOnSelectedSquare == null) {
-				for (Ship ship : player.getShips()) {				
-					if (!ship.hasBeenPlaced()) {
-						addShip(board, ship);
+			// Make sure that the player is within three squares of their side.
+			if (Board.getDistanceBetween(selectedSquare.xCoordinate, selectedSquare.yCoordinate, playerStartXCoordinate, selectedSquare.yCoordinate) < SHIP_START_DISTANCE) {
+				// Make sure there's no ship on that square before the player adds it to that square.
+				Ship shipOnSelectedSquare = selectedSquare.getShipOnSquare();
+				if (shipOnSelectedSquare == null) {
+					for (Ship ship : player.getShips()) {				
+						if (!ship.hasBeenPlaced()) {
+							addShip(board, ship);
+						}
 					}
 				}
+				else {
+					removeShip(board, shipOnSelectedSquare);
+				}
 			}
-			else {
-				removeShip(board, shipOnSelectedSquare);
+		}
+		
+		else if (state.equals(Game.GameState.Movement)) {
+			// Get the ship on the selected square
+			Ship shipOnSquare = selectedSquare.getShipOnSquare();
+			
+			// Make sure that there's actually a ship on the square before we do anything.
+			if (shipOnSquare != null) {
+				// Set the player's selected ship.
+				player.setSelectedShip(shipOnSquare);
 			}
+		}
+	}
+	
+	/**
+	 * Moves the ship that the player has selected the given direction
+	 * @param player The player to move the ship of
+	 * @param direction The direction to move the ship.
+	 */
+	public static void moveShip(Player player, BoardManipulation.MoveDirection direction) {
+		if (player.getSelectedShip() != null) {
+			
 		}
 	}
 	

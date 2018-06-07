@@ -48,7 +48,7 @@ public abstract class Player {
 	// The board object on which this player is playing.
 	protected Game game;
 	
-	public static final String UP = "UP", DOWN = "DOWN", LEFT = "LEFT", RIGHT = "RIGHT", ENTER = "ENTER", MOVE = "MOVE";
+	public static final String UP = "UP", DOWN = "DOWN", LEFT = "LEFT", RIGHT = "RIGHT", ENTER = "ENTER", MOVE = "MOVE", TOGGLE_HIDE = "TOGGLE_HIDE";
 	
 	/**
 	 * Instantiates a player object.
@@ -86,6 +86,7 @@ public abstract class Player {
 		else if (key.equals(keyBindings.get(LEFT))) game.boardManipulation.move(this, BoardManipulation.MoveDirection.left);
 		else if (key.equals(keyBindings.get(RIGHT))) game.boardManipulation.move(this, BoardManipulation.MoveDirection.right);
 		else if (key.equals(keyBindings.get(ENTER))) ShipManipulation.enterPressed(this);
+		else if (key.equals(keyBindings.get(TOGGLE_HIDE))) toggleHide();
 	}
 	
 	/**
@@ -156,6 +157,15 @@ public abstract class Player {
 	}
 	
 	/**
+	 * Determines the square at this player's start position.
+	 * @return The square at the player's start position.
+	 */
+	public Square getStartSquare() {
+		// Get the square at start position.
+		return game.getBoard().getSquare(start_x, start_y);
+	}
+	
+	/**
 	 * Determines the number of ships that this player has left.
 	 * @return The number of ships that the player has left.
 	 */
@@ -222,5 +232,31 @@ public abstract class Player {
 	 */
 	public void setSelectedShip(Ship ship) {
 		selectedShip = ship;
+	}
+	
+	/**
+	 * Toggles the visibility of this player's ships, hiding them from the other players or showing them again.
+	 */
+	public void toggleHide() {
+		toggleHide(!hidden);
+	}
+	
+	// Whether or not the player's ships are hidden.
+	private boolean hidden;
+	/**
+	 * Hides or shows all of the player's hides, if the player would like to see their ships
+	 * or if the player wishes to hide their ships. 
+	 * @param hide True to hid the player's ships, false to show them again.
+	 */
+	public void toggleHide(boolean hide) {
+		// If everything is already hidden or already being shown, we needn't bother do anything.
+		if (hidden != hide) {
+			hidden = hide;
+		}
+		
+		// Now iterate through each ship and set their visibility appropriately.
+		for (Ship ship : ships) {
+			ship.setVisible(!hidden);
+		}
 	}
 }
