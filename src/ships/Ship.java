@@ -93,6 +93,8 @@ public class Ship extends Ellipse {
 		
 		// If it succeeded, move the ship
 		if (didAdd) {
+			// Get this ship off of it's old square.
+			if (currentPosition != null) currentPosition.removeShip(this);
 			currentPosition = newPosition;
 		}
 	}
@@ -164,7 +166,7 @@ public class Ship extends Ellipse {
 	 */
 	public ArrayList<Square> getPossibleSquares() {
 		ArrayList<Square> possibleSquares = null;
-		
+			
 		if (currentPosition != null && !isDestroyed()) {
 			// If we move diagonally, calculate the squares.
 			if (moveDirection.equals(DirectionOfMovement.Diagonal)) {
@@ -176,7 +178,7 @@ public class Ship extends Ellipse {
 						// Determine the coordinates of the square we're looking for and then get the square
 						Square squareToAdd = player.getGame().getBoard().getSquare(currentPosition.xCoordinate + x, currentPosition.yCoordinate + y);
 						// If the square exists, it won't be null and we'll add it to the possible squares.
-						if (squareToAdd != null && squareToAdd.canMoveToSquare(this)) possibleSquares.add(squareToAdd);
+						if (isPossibleSquare(squareToAdd)) possibleSquares.add(squareToAdd);
 					}
 				}
 			}
@@ -189,19 +191,37 @@ public class Ship extends Ellipse {
 					// Determine the coordinates of the square we're looking for and then get the square
 					Square squareToAdd = player.getGame().getBoard().getSquare(currentPosition.xCoordinate + x, currentPosition.yCoordinate);
 					// If the square exists, it won't be null and we'll add it to the possible squares.
-					if (squareToAdd != null) possibleSquares.add(squareToAdd);
+					if (isPossibleSquare(squareToAdd)) possibleSquares.add(squareToAdd);
 				}
 				for (int y = -1; y <= 1; y+= 2) {
 					// Determine the coordinates of the square we're looking for and then get the square
 					Square squareToAdd = player.getGame().getBoard().getSquare(currentPosition.xCoordinate, currentPosition.yCoordinate + y);
 					// If the square exists, it won't be null and we'll add it to the possible squares.
-					if (squareToAdd != null && squareToAdd.canMoveToSquare(this)) possibleSquares.add(squareToAdd);
+					if (isPossibleSquare(squareToAdd)) possibleSquares.add(squareToAdd);
 				}
 			}
 		}
 
 		// Return results, even if it's null.
 		return possibleSquares;
+	}
+	/**
+	 * Determines if it's possible for the given ship to move to the given square
+	 * @param square The square to move to
+	 * @return True if the ship can move there, false otherwise.
+	 */
+	private boolean isPossibleSquare(Square square) {
+		return isPossibleSquare(square, this);
+	}
+	
+	/**
+	 * Determines if it's possible for the given ship to move to the given square
+	 * @param square The square to move to
+	 * @param ship The ship that wishes to move.
+	 * @return True if the ship can move there, false otherwise.
+	 */
+	private static boolean isPossibleSquare(Square square, Ship ship) {
+		return square != null && square.canMoveToSquare(ship);
 	}
 	
 	public void hit(int damage) {

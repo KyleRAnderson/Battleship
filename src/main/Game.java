@@ -59,7 +59,7 @@ public class Game {
 
 		// Set the player help controls.
 		for (Player player : getPlayers()) {
-			board.setPlayerHelpControls(player);
+			player.setupSideBar();
 		}
 		
 		boardManipulation = new PlayerManipulation();
@@ -97,7 +97,7 @@ public class Game {
 	 */
 	private void startFiring() {
 		state = GameState.Firing;
-		nextTurn();
+		updateTurn();
 		
 		board.setMessage("Firing stage: Hit your opponents!");
 	}
@@ -107,19 +107,29 @@ public class Game {
 	 */
 	private void startMovement() {
 		state = GameState.Movement;
+		updateTurn();
+		// Set a message for the users.
+		board.setMessage("Select your ships and move them with the move keys!");
 	}
 	
 	/**
 	 * Begins the next round of the game.
 	 */
-	public void nextTurn() {
-		if (isWinner()) end();
-		for (Player player : players) {
-			player.resetForNextRound();
+	public void updateTurn() {
+		// Set a stage display message
+		String stage = getState().equals(GameState.Firing) ? "Firing " : "Movement ";
+		
+		// Only actually advance the round if it's a movement stage.
+		if (getState().equals(GameState.Firing)) {
+			for (Player player : players) {			
+				player.resetForNextRound();
+			}
+			
+			turn++;
 		}
 		
-		turn++;
-		board.setStatus("Playing turn " + turn);
+		if (isWinner()) end();
+		board.setStatus(stage + " turn " + turn);
 	}
 	
 	public boolean isWinner() {

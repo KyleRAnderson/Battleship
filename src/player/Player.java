@@ -6,9 +6,13 @@ import java.util.function.Consumer;
 
 import board.Board;
 import board.Square;
+import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import main.BattleshipGalactica;
 import main.Game;
 import main.InputHandler;
 import manipulation.PlayerManipulation;
@@ -43,6 +47,9 @@ public abstract class Player {
 	
 	protected static int NUM_SHOTS = 4, NUM_MOVES = 1;
 	protected int numShotsLeft = NUM_SHOTS, numMovesLeft = NUM_MOVES ;
+	
+	// Some things displayed on the board to help the user know what's going on.
+	protected Text keyBindingsHelp, shotsLeftDisplay, movesLeftDisplay;
 	
 	// The board object on which this player is playing.
 	protected Game game;
@@ -193,6 +200,7 @@ public abstract class Player {
 			numShotsLeft--;
 			squareToShoot.shoot(this);
 			game.refreshState();
+			setShotsLeftDisplay();
 		}
 	}
 	
@@ -218,6 +226,8 @@ public abstract class Player {
 	public void resetForNextRound() {
 		numShotsLeft = NUM_SHOTS;
 		numMovesLeft = NUM_MOVES;
+		setMovesLeftDisplay();
+		setShotsLeftDisplay();
 	}
 	
 	/**
@@ -242,7 +252,7 @@ public abstract class Player {
 	 */
 	public void setSelectedShip(Ship ship) {
 		// Only do stuff if the ship is null or its player is this player. DON'T MOVE OPPONENTS SHIPS!
-		if (ship == null || ship.player.equals(this)) {
+		if (ship == null || (ship.player.equals(this) && canMove())) {
 			// Call selection changed function (usually would be an event).
 			PlayerManipulation.shipSelectionChanged(selectedShip, ship, this);
 			
@@ -302,6 +312,7 @@ public abstract class Player {
 	 */
 	public void shipMoved() {
 		numMovesLeft--;
+		setMovesLeftDisplay();
 	}
 	
 	/**
@@ -317,4 +328,78 @@ public abstract class Player {
 	 * @return True if the player can still move his/her ships, false otherwise.
 	 */
 	public boolean canMove() { return getMovesLeft() > 0; }
+	
+	/**
+	 * Sets up the sidebar items for this player
+	 */
+	public void setupSideBar() {
+		// Get the player's key bindings
+		HashMap<String, KeyCode> keyBindings = getKeysUsed();
+		
+		// Format the help.
+		String text = String.format(
+						"%s: Show or hide your game pieces.\n" +
+						"%s: Cancel the operation\n" +
+						"%s: Select.\n" +
+						"%s: Move the cursor up.\n" +
+						"%s: Move the cursor down.\n" +
+						"%s: Move the cursor left.\n" +
+						"%s: Move the cursor right.\n",
+						keyBindings.get(Player.TOGGLE_HIDE).toString(), 
+						keyBindings.get(Player.CANCEL).toString(), 
+						keyBindings.get(Player.ENTER).toString(),
+						keyBindings.get(Player.UP).toString(),
+						keyBindings.get(Player.DOWN).toString(),
+						keyBindings.get(Player.LEFT).toString(),
+						keyBindings.get(Player.RIGHT).toString()
+				);
+		// Make new text object to display this helpful stuff.
+		keyBindingsHelp = new Text();
+		keyBindingsHelp.setFont(BattleshipGalactica.CONTENT_FONT);
+		keyBindingsHelp.setText(text);
+		if (getStartPosition().equals(StartSide.BottomRight)) {
+			keyBindingsHelp.setTextAlignment(TextAlignment.RIGHT);
+		}
+		else {
+			keyBindingsHelp.setTextAlignment(TextAlignment.LEFT);
+		}
+		
+		shotsLeftDisplay = new Text();
+		shotsLeftDisplay.setFont(BattleshipGalactica.HEADING_FONT);
+		if (getStartPosition().equals(StartSide.BottomRight)) {
+			shotsLeftDisplay.setTextAlignment(TextAlignment.RIGHT);
+		}
+		else {
+			shotsLeftDisplay.setTextAlignment(TextAlignment.LEFT);
+		}
+		setShotsLeftDisplay();
+		
+		movesLeftDisplay = new Text();
+		movesLeftDisplay.setFont(BattleshipGalactica.HEADING_FONT);
+		if (getStartPosition().equals(StartSide.BottomRight)) {
+			movesLeftDisplay.setTextAlignment(TextAlignment.RIGHT);
+		}
+		else {
+			movesLeftDisplay.setTextAlignment(TextAlignment.LEFT);
+		}
+		setMovesLeftDisplay();
+		
+		getGame().getBoard().setPlayerSidebar(this);
+	}
+	
+	/**
+	 * Returns an array of this player's sidebar nodes.
+	 * @return An array of the nodes for this player's sidebar.
+	 */
+	public Node[] getSidebarItems() {
+		return new Node[] { keyBindingsHelp, shotsLeftDisplay, movesLeftDisplay };
+	}
+	
+	private void setMovesLeftDisplay() {
+		movesLeftDisplay.setText("Moves: " + getMovesLeft());
+	}
+	
+	private void setShotsLeftDisplay() {
+		shotsLeftDisplay.setText("Shots: " + getShotsLeft());
+	}
 }

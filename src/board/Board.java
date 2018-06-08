@@ -8,6 +8,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -234,7 +235,7 @@ public class Board extends Parent {
 			// Remove the ship from the gridpane.
 			((GridPane) root.getCenter()).getChildren().remove(ship);
 			// Tell the square that that ship was removed.
-			square.removeShip(ship);	
+			square.removeShip(ship);
 		}		
 	}
 	
@@ -252,40 +253,13 @@ public class Board extends Parent {
 	 * Sets up a sidebar on the player's side of the board with a listing of their controls.
 	 * @param player The player to set the controls of.
 	 */
-	public void setPlayerHelpControls(Player player) {
-		// Get the player's key bindings
-		HashMap<String, KeyCode> keyBindings = player.getKeysUsed();
-		
-		// Format the help.
-		String text = String.format(
-						"%s: Show or hide your game pieces.\n" +
-						"%s: Cancel the operation\n" +
-						"%s: Select.\n" +
-						"%s: Move the cursor up.\n" +
-						"%s: Move the cursor down.\n" +
-						"%s: Move the cursor left.\n" +
-						"%s: Move the cursor right.\n",
-						keyBindings.get(Player.TOGGLE_HIDE).toString(), 
-						keyBindings.get(Player.CANCEL).toString(), 
-						keyBindings.get(Player.ENTER).toString(),
-						keyBindings.get(Player.UP).toString(),
-						keyBindings.get(Player.DOWN).toString(),
-						keyBindings.get(Player.LEFT).toString(),
-						keyBindings.get(Player.RIGHT).toString()
-				);
-		// Make new text object to display this helpful stuff.
-		Text display = new Text();
-		display.setFont(BattleshipGalactica.CONTENT_FONT);
-		display.setText(text);
-		
+	public void setPlayerSidebar(Player player) {		
 		// Now just figure out where to put the text and put it there.
 		if (player.getStartPosition().equals(Player.StartSide.BottomRight)) {
-			root.setRight(display);
-			display.setTextAlignment(TextAlignment.RIGHT);
+			root.setRight(new VBox(player.getSidebarItems()));
 		}
 		else {
-			root.setLeft(display);
-			display.setTextAlignment(TextAlignment.LEFT);
+			root.setLeft(new VBox(player.getSidebarItems()));
 		}
 	}
 }

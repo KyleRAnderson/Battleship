@@ -73,6 +73,7 @@ public class ShipManipulation {
 		if (player.hasSelectedShip()) {
 			// Attempt to move the ship in this round.
 			player.getSelectedShip().move(direction);
+			player.getGame().refreshState();
 			// Nullify the player's selected ship.
 			player.setSelectedShip(null);
 		}
@@ -123,7 +124,7 @@ public class ShipManipulation {
 		// Only iterate if it's possible
 		if (possibleSquares != null) {
 			// Iterate through each of the ship's possible squares.
-			for (Square square : ship.getPossibleSquares()) {
+			for (Square square : possibleSquares) {
 				// Highlight if necessary, or clear highlight if requested.
 				if (select) square.highlight(ship.player);
 				else square.clearHighlight();
