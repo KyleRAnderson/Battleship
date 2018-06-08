@@ -44,7 +44,7 @@ public class Square extends Rectangle {
 		yCoordinate = y;
 		
 		// Set the colours for the square
-		setFill(DEFAULT_FILL);
+		setFillToDefault();
 		setStroke(DEFAULT_STROKE);
 	}
 	
@@ -57,12 +57,22 @@ public class Square extends Rectangle {
 	}
 	
 	/**
-	 * Shoots the ship at this position if there is one and then applies damage to it if it's hit
-	 * @param shooter The ship shooting at the other ship.
+	 * Determines if this square has an enemy ship or nothing on it.
+	 * @param player The player to whom to determine if there's an enemy.
+	 * @return True if there's an enemy or nothing on the square, false if the provided
+	 * player has a ship on this square.
 	 */
-	public void shoot(Ship shooter) {
+	public boolean hasEnemyOrNothing(Player player) {
+		return currentShip == null || !currentShip.player.equals(player);
+	}
+	
+	/**
+	 * Shoots the ship at this position if there is one and then applies damage to it if it's hit
+	 * @param shooter The player shooting at this square
+	 */
+	public void shoot(Player shooter) {
 		if (currentShip != null) {
-			currentShip.hit(shooter.player.getDamage());
+			currentShip.hit(shooter.getDamage());
 		}
 	}
 	
@@ -87,7 +97,7 @@ public class Square extends Rectangle {
 		else if (!currentShip.player.equals(ship.player)) {
 			currentShip = Board.battle(currentShip, ship);
 			shipAdded = currentShip.equals(ship);
-			setFill(DEFAULT_FILL);
+			setFillToDefault();
 		}
 		
 		return shipAdded;
@@ -104,7 +114,7 @@ public class Square extends Rectangle {
 	public void shipDestroyed(Ship ship) {
 		// Only do stuff if the ship that was destroyed is the one that's on this square
 		if (ship.equals(currentShip)) {
-			setFill(Color.RED);
+			setFillToDefault();
 		}
 	}
 	
@@ -149,7 +159,7 @@ public class Square extends Rectangle {
 	 */
 	private void setSelected(Color colour, boolean selected) {
 		if (selected) setFill(colour);
-		else setFill(DEFAULT_FILL);
+		else setFillToDefault();
 	}
 	
 	/**
@@ -190,5 +200,13 @@ public class Square extends Rectangle {
 	 */
 	public boolean canMoveToSquare(Ship ship) {
 		return currentShip == null || !currentShip.player.equals(ship.player);
+	}
+	
+	/**
+	 * Sets the fill properly to whatever the default is.
+	 */
+	private void setFillToDefault() {
+		if (isUsable()) setFill(DEFAULT_FILL);
+		else setFill(Color.RED);
 	}
 }

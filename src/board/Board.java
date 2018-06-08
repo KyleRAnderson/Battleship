@@ -1,12 +1,16 @@
 package board;
 
+import java.util.HashMap;
+
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import main.BattleshipGalactica;
 import main.Game;
 import player.Player;
@@ -75,15 +79,15 @@ public class Board extends Parent {
 		// Set up the turn label at the top of the board.
 		statusLabel.setFont(BattleshipGalactica.HEADING_FONT);
 		statusLabel.setFill(Color.RED);
-		GridPane.setConstraints(statusLabel, 1, 0);
 		
 		// Now set up the message text
-		message.setFont(BattleshipGalactica.CONTENT_FONT);
+		message.setFont(BattleshipGalactica.HEADING_FONT);
 		message.setFill(Color.BLACK);
-		GridPane.setConstraints(message, 0, 0);
 		
 		// Add the turn indicator and the message to the screen.
-		root.setTop(new HBox(statusLabel, message));
+		HBox header = new HBox(statusLabel, message);
+		header.setSpacing(50);
+		root.setTop(header);
 		
 		// Set up a gridpane for the squares
 		GridPane squaresPane = new GridPane();
@@ -242,6 +246,47 @@ public class Board extends Parent {
 	public void moveShip(Ship ship) {
 		((GridPane) root.getCenter()).getChildren().remove(ship);
 		addShip(ship);
+	}
+	
+	/**
+	 * Sets up a sidebar on the player's side of the board with a listing of their controls.
+	 * @param player The player to set the controls of.
+	 */
+	public void setPlayerHelpControls(Player player) {
+		// Get the player's key bindings
+		HashMap<String, KeyCode> keyBindings = player.getKeysUsed();
+		
+		// Format the help.
+		String text = String.format(
+						"%s: Show or hide your game pieces.\n" +
+						"%s: Cancel the operation\n" +
+						"%s: Select.\n" +
+						"%s: Move the cursor up.\n" +
+						"%s: Move the cursor down.\n" +
+						"%s: Move the cursor left.\n" +
+						"%s: Move the cursor right.\n",
+						keyBindings.get(Player.TOGGLE_HIDE).toString(), 
+						keyBindings.get(Player.CANCEL).toString(), 
+						keyBindings.get(Player.ENTER).toString(),
+						keyBindings.get(Player.UP).toString(),
+						keyBindings.get(Player.DOWN).toString(),
+						keyBindings.get(Player.LEFT).toString(),
+						keyBindings.get(Player.RIGHT).toString()
+				);
+		// Make new text object to display this helpful stuff.
+		Text display = new Text();
+		display.setFont(BattleshipGalactica.CONTENT_FONT);
+		display.setText(text);
+		
+		// Now just figure out where to put the text and put it there.
+		if (player.getStartPosition().equals(Player.StartSide.BottomRight)) {
+			root.setRight(display);
+			display.setTextAlignment(TextAlignment.RIGHT);
+		}
+		else {
+			root.setLeft(display);
+			display.setTextAlignment(TextAlignment.LEFT);
+		}
 	}
 }
 

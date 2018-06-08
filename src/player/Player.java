@@ -1,7 +1,6 @@
 package player;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
@@ -48,7 +47,7 @@ public abstract class Player {
 	// The board object on which this player is playing.
 	protected Game game;
 	
-	public static final String UP = "UP", DOWN = "DOWN", LEFT = "LEFT", RIGHT = "RIGHT", ENTER = "ENTER", MOVE = "MOVE", TOGGLE_HIDE = "TOGGLE_HIDE", CANCEL = "CANCEL";
+	public static final String UP = "UP", DOWN = "DOWN", LEFT = "LEFT", RIGHT = "RIGHT", ENTER = "ENTER", TOGGLE_HIDE = "TOGGLE_HIDE", CANCEL = "CANCEL";
 	
 	/**
 	 * Instantiates a player object.
@@ -56,6 +55,7 @@ public abstract class Player {
 	 */
 	public Player(Game game, StartSide side) {
 		this.game = game;
+		startSide = side;
 		
 		// Set the start position of this player based on the start side.
 		if (side.equals(StartSide.BottomRight)) {
@@ -67,7 +67,7 @@ public abstract class Player {
 			start_y = 0;
 		}
 		
-		InputHandler.addKeyBindings(getKeysUsed(), new Consumer<KeyCode>() {
+		InputHandler.addKeyBindings(getKeysUsed().values(), new Consumer<KeyCode>() {
 			@Override
 			public void accept(KeyCode t) {
 				onKeyPressed(t);
@@ -100,8 +100,8 @@ public abstract class Player {
 	 * Returns a list of the keys that this player uses
 	 * @return The keys used by this player.
 	 */
-	public Collection<KeyCode> getKeysUsed() {
-		return getKeyBindings().values();
+	public HashMap<String, KeyCode> getKeysUsed() {
+		return getKeyBindings(); // TODO make a copy before returning.
 	}
 	
 	/**
@@ -189,9 +189,10 @@ public abstract class Player {
 	 */
 	public void shoot(Square squareToShoot) {
 		// Only shoot at a square if we have shots left and if that square is usable.
-		if (getShotsLeft() > 0 && squareToShoot.isUsable()) { 
+		if (canShoot() && squareToShoot.isUsable() && squareToShoot.hasEnemyOrNothing(this)) { 
 			numShotsLeft--;
-			
+			squareToShoot.shoot(this);
+			game.refreshState();
 		}
 	}
 	
@@ -240,10 +241,13 @@ public abstract class Player {
 	 * @param ship The ship to select.
 	 */
 	public void setSelectedShip(Ship ship) {
-		// Call selection changed function (usually would be an event).
-		PlayerManipulation.shipSelectionChanged(selectedShip, ship, this);
-		
-		selectedShip = ship;
+		// Only do stuff if the ship is null or its player is this player. DON'T MOVE OPPONENTS SHIPS!
+		if (ship == null || ship.player.equals(this)) {
+			// Call selection changed function (usually would be an event).
+			PlayerManipulation.shipSelectionChanged(selectedShip, ship, this);
+			
+			selectedShip = ship;
+		}
 	}
 	
 	/**

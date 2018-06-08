@@ -56,6 +56,11 @@ public class Game {
 		
 		// Make the board
 		board = new Board(this);
+
+		// Set the player help controls.
+		for (Player player : getPlayers()) {
+			board.setPlayerHelpControls(player);
+		}
 		
 		boardManipulation = new PlayerManipulation();
 		shipManipulation = new ShipManipulation();
@@ -84,7 +89,7 @@ public class Game {
 		state = GameState.ShipPlacement;
 		
 		// Give the user a little help with what to do
-		board.setMessage("Use the arrow keys or WASD to move your selection.\nPlace your ships.");
+		board.setMessage("Place your ships on the board.");
 	}
 	
 	/**
@@ -93,6 +98,8 @@ public class Game {
 	private void startFiring() {
 		state = GameState.Firing;
 		nextTurn();
+		
+		board.setMessage("Firing stage: Hit your opponents!");
 	}
 	
 	/**

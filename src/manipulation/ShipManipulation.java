@@ -1,5 +1,7 @@
 package manipulation;
 
+import java.util.ArrayList;
+
 import board.Board;
 import board.Square;
 import main.Game;
@@ -44,7 +46,7 @@ public class ShipManipulation {
 				}
 			}
 		}
-		
+		// If the game is in movement stage, select the ship (if there is one) and move it.
 		else if (state.equals(Game.GameState.Movement)) {
 			// Get the ship on the selected square
 			Ship shipOnSquare = selectedSquare.getShipOnSquare();
@@ -54,6 +56,10 @@ public class ShipManipulation {
 				// Set the player's selected ship.
 				player.setSelectedShip(shipOnSquare);
 			}
+		}
+		// If the game is in the firing stage, fire!
+		else if (state.equals(Game.GameState.Firing)) {
+			player.shoot(selectedSquare);
 		}
 	}
 	
@@ -111,11 +117,18 @@ public class ShipManipulation {
 	 * @param select Set to true to select, false to deselect.
 	 */
 	public static void selectShip(Ship ship, boolean select) {
-		// Iterate through each of the ship's possible squares.
-		for (Square square : ship.getPossibleSquares()) {
-			// Highlight if necessary, or clear highlight if requested.
-			if (select) square.highlight(ship.player);
-			else square.clearHighlight();
+		// Determine possible squares for the ship to move to
+		ArrayList<Square> possibleSquares = ship.getPossibleSquares();
+		
+		// Only iterate if it's possible
+		if (possibleSquares != null) {
+			// Iterate through each of the ship's possible squares.
+			for (Square square : ship.getPossibleSquares()) {
+				// Highlight if necessary, or clear highlight if requested.
+				if (select) square.highlight(ship.player);
+				else square.clearHighlight();
+			}
 		}
+		
 	}
 }

@@ -101,7 +101,7 @@ public class Ship extends Ellipse {
 	 * @return True if the ship is allowed to move, false otherwise.
 	 */
 	public boolean canMove() {
-		return player.getMovesLeft() > 0;
+		return player.getMovesLeft() > 0 && !isDestroyed();
 	}
 	
 	private Square getSquareInDirection(Board.MoveDirection direction) {
@@ -165,7 +165,7 @@ public class Ship extends Ellipse {
 	public ArrayList<Square> getPossibleSquares() {
 		ArrayList<Square> possibleSquares = null;
 		
-		if (currentPosition != null) {
+		if (currentPosition != null && !isDestroyed()) {
 			// If we move diagonally, calculate the squares.
 			if (moveDirection.equals(DirectionOfMovement.Diagonal)) {
 				// Instantiate new ArrayList
