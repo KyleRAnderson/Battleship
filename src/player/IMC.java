@@ -6,7 +6,6 @@ import main.Game;
 
 import java.util.HashMap;
 
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 
 public class IMC extends Player {
@@ -36,5 +35,10 @@ public class IMC extends Player {
 	
 	public Color getSelectionColour() { return Color.BLUE; }
 	
-	public ImageView getIcon() { return new ImageView("file:/" + BattleshipGalactica.RESOURCES_LOCATION + "/imc.png"); }
+	public String getIcon() { return "file:" + BattleshipGalactica.RESOURCES_LOCATION + "/imc.png"; }
+
+	@Override
+	public String getName() {
+		return "IMC";
+	}
 }

@@ -46,7 +46,7 @@ public abstract class Player {
 	protected Ship selectedShip;
 	
 	protected static int NUM_SHOTS = 4, NUM_MOVES = 1;
-	protected int numShotsLeft = NUM_SHOTS, numMovesLeft = NUM_MOVES ;
+	protected int numShotsLeft = NUM_SHOTS, numMovesLeft = NUM_MOVES;
 	
 	// Some things displayed on the board to help the user know what's going on.
 	protected Text keyBindingsHelp, shotsLeftDisplay, movesLeftDisplay, shipsLeftDisplay;
@@ -138,7 +138,7 @@ public abstract class Player {
 	 * Gets the ImageView for this player's icon.
 	 * @return This player's icon.
 	 */
-	public abstract ImageView getIcon();
+	public abstract String getIcon();
 	
 	/**
 	 * Adds the given ship to this player's list of ships
@@ -357,17 +357,21 @@ public abstract class Player {
 		keyBindingsHelp = new Text();
 		keyBindingsHelp.setFont(BattleshipGalactica.CONTENT_FONT);
 		keyBindingsHelp.setText(text);
+		keyBindingsHelp.setFill(Color.WHITE);
 		
 		shotsLeftDisplay = new Text();
 		shotsLeftDisplay.setFont(BattleshipGalactica.HEADING_FONT);
+		shotsLeftDisplay.setFill(Color.WHITE);
 		setShotsLeftDisplay();
 		
 		movesLeftDisplay = new Text();
 		movesLeftDisplay.setFont(BattleshipGalactica.HEADING_FONT);
+		movesLeftDisplay.setFill(Color.WHITE);
 		setMovesLeftDisplay();
 		
 		shipsLeftDisplay = new Text();
 		shipsLeftDisplay.setFont(BattleshipGalactica.HEADING_FONT);
+		shipsLeftDisplay.setFill(Color.WHITE);
 		setShipsLeftDisplay();
 		
 		// Set up the alignments of the text boxes properly. 
@@ -392,7 +396,13 @@ public abstract class Player {
 	 * @return An array of the nodes for this player's sidebar.
 	 */
 	public Node[] getSidebarItems() {
-		return new Node[] { keyBindingsHelp, shotsLeftDisplay, movesLeftDisplay, shipsLeftDisplay };
+		// Set up an icon for the player.
+		ImageView playerIcon = new ImageView(getIcon());
+		playerIcon.setFitHeight(50);
+		playerIcon.setPreserveRatio(true);
+		playerIcon.setSmooth(true);
+		playerIcon.setCache(true);
+		return new Node[] { playerIcon, keyBindingsHelp, shotsLeftDisplay, movesLeftDisplay, shipsLeftDisplay };
 	}
 	
 	private void setMovesLeftDisplay() {
@@ -448,4 +458,6 @@ public abstract class Player {
 	public void shipDestroyed(Ship ship) {
 		setShipsLeftDisplay();
 	}
+	
+	public abstract String getName();
 }

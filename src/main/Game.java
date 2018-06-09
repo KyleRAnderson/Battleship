@@ -151,10 +151,10 @@ public class Game {
 			winner = "Both players won!";
 		}
 		else if (player1Won) {
-			winner = player1.getClass().toString() + " won!";
+			winner = player1.getName() + " won!";
 		}
 		else if (player2Won) {
-			winner = player2.getClass().toString() + " won!";
+			winner = player2.getName() + " won!";
 		}
 		
 		// Return results.
@@ -203,6 +203,7 @@ public class Game {
 		// winner beats all other states
 		if (isWinner()) {
 			this.state = GameState.Ended;
+			end();
 		}
 		// If we're in ship placement, check if all ships for each player have been placed.
 		else if (state.equals(GameState.ShipPlacement)) {

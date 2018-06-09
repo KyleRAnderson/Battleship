@@ -3,6 +3,12 @@ package board;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -73,6 +79,11 @@ public class Board extends Parent {
 		root = new BorderPane();
 		root.setPadding(new Insets(PADDING, PADDING, PADDING, PADDING));
 		getChildren().add(root);
+		
+		root.setBackground(new Background(new BackgroundImage(new Image("file:" + 
+		BattleshipGalactica.RESOURCES_LOCATION + "/main_background.png", 1000, 1000, false, true), 
+				BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, 
+				BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
 		
 		// Set up the turn label at the top of the board.
 		statusLabel.setFont(BattleshipGalactica.HEADING_FONT);
