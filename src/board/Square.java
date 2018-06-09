@@ -24,6 +24,25 @@ public class Square extends Rectangle {
 	static final double DEFAULT_THICKNESS = 1.0, SELECTED_THICKNESS = 2.0;
 	
 	/**
+	 * The size of each player's territory, used both to restrict where player's may place their ships at the
+	 * start of the game and to determine if the other player's ship is in the enemy's territory 
+	 * at the end of the game.
+	 */
+	public static final int TERRITORY_SIZE = 2;
+	
+	/**
+	 * Determines whether the given point is within the territory of the provided side.
+	 * @param territorySide The side to look at.
+	 * @param x The x-value for object.
+	 * @param y The y-value for the object.
+	 * @return True if the object is within the specified territory, false otherwise.
+	 */
+	public static final boolean isWithinTerritory(Player.StartSide territorySide, int x, int y) {
+		int territoryX = territorySide.equals(Player.StartSide.BottomRight) ? Board.NUM_COLUMNS - 1 : 0;
+		return  Board.getDistanceBetween(x, y, territoryX, y) < TERRITORY_SIZE;
+	}
+	
+	/**
 	 * Whether or not this square is currently selected by a player
 	 */
 	private boolean isSelected;

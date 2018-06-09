@@ -1,17 +1,14 @@
 package board;
 
-import java.util.HashMap;
-
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import main.BattleshipGalactica;
 import main.Game;
 import player.Player;
@@ -254,12 +251,17 @@ public class Board extends Parent {
 	 * @param player The player to set the controls of.
 	 */
 	public void setPlayerSidebar(Player player) {		
+		// Make a Vertical box node for the sidebar items.
+		VBox sideBar = new VBox(player.getSidebarItems());
+		
 		// Now just figure out where to put the text and put it there.
 		if (player.getStartPosition().equals(Player.StartSide.BottomRight)) {
-			root.setRight(new VBox(player.getSidebarItems()));
+			sideBar.setAlignment(Pos.CENTER_RIGHT);
+			root.setRight(sideBar);
 		}
 		else {
-			root.setLeft(new VBox(player.getSidebarItems()));
+			sideBar.setAlignment(Pos.CENTER_LEFT);
+			root.setLeft(sideBar);
 		}
 	}
 }

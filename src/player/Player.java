@@ -49,7 +49,7 @@ public abstract class Player {
 	protected int numShotsLeft = NUM_SHOTS, numMovesLeft = NUM_MOVES ;
 	
 	// Some things displayed on the board to help the user know what's going on.
-	protected Text keyBindingsHelp, shotsLeftDisplay, movesLeftDisplay;
+	protected Text keyBindingsHelp, shotsLeftDisplay, movesLeftDisplay, shipsLeftDisplay;
 	
 	// The board object on which this player is playing.
 	protected Game game;
@@ -217,7 +217,7 @@ public abstract class Player {
 	 * Determines if the given player can still shoot
 	 * @return True if the player can still shoot, false otherwise
 	 */
-	public boolean canShoot() { return getShotsLeft() > 0; }
+	public boolean canShoot() { return getShotsLeft() > 0 && getNumShipsLeft() > 0; }
 	
 	/**
 	 * Resets the number of shots that the player has for this turn as well as the number of moves
@@ -357,32 +357,32 @@ public abstract class Player {
 		keyBindingsHelp = new Text();
 		keyBindingsHelp.setFont(BattleshipGalactica.CONTENT_FONT);
 		keyBindingsHelp.setText(text);
-		if (getStartPosition().equals(StartSide.BottomRight)) {
-			keyBindingsHelp.setTextAlignment(TextAlignment.RIGHT);
-		}
-		else {
-			keyBindingsHelp.setTextAlignment(TextAlignment.LEFT);
-		}
 		
 		shotsLeftDisplay = new Text();
 		shotsLeftDisplay.setFont(BattleshipGalactica.HEADING_FONT);
-		if (getStartPosition().equals(StartSide.BottomRight)) {
-			shotsLeftDisplay.setTextAlignment(TextAlignment.RIGHT);
-		}
-		else {
-			shotsLeftDisplay.setTextAlignment(TextAlignment.LEFT);
-		}
 		setShotsLeftDisplay();
 		
 		movesLeftDisplay = new Text();
 		movesLeftDisplay.setFont(BattleshipGalactica.HEADING_FONT);
+		setMovesLeftDisplay();
+		
+		shipsLeftDisplay = new Text();
+		shipsLeftDisplay.setFont(BattleshipGalactica.HEADING_FONT);
+		setShipsLeftDisplay();
+		
+		// Set up the alignments of the text boxes properly. 
 		if (getStartPosition().equals(StartSide.BottomRight)) {
+			shipsLeftDisplay.setTextAlignment(TextAlignment.RIGHT);
 			movesLeftDisplay.setTextAlignment(TextAlignment.RIGHT);
+			shotsLeftDisplay.setTextAlignment(TextAlignment.RIGHT);
+			keyBindingsHelp.setTextAlignment(TextAlignment.RIGHT);
 		}
 		else {
+			shipsLeftDisplay.setTextAlignment(TextAlignment.LEFT);
 			movesLeftDisplay.setTextAlignment(TextAlignment.LEFT);
+			shotsLeftDisplay.setTextAlignment(TextAlignment.LEFT);
+			keyBindingsHelp.setTextAlignment(TextAlignment.LEFT);
 		}
-		setMovesLeftDisplay();
 		
 		getGame().getBoard().setPlayerSidebar(this);
 	}
@@ -392,14 +392,60 @@ public abstract class Player {
 	 * @return An array of the nodes for this player's sidebar.
 	 */
 	public Node[] getSidebarItems() {
-		return new Node[] { keyBindingsHelp, shotsLeftDisplay, movesLeftDisplay };
+		return new Node[] { keyBindingsHelp, shotsLeftDisplay, movesLeftDisplay, shipsLeftDisplay };
 	}
 	
 	private void setMovesLeftDisplay() {
-		movesLeftDisplay.setText("Moves: " + getMovesLeft());
+		String text = formatTextForSidebar("Moves", String.valueOf(getMovesLeft()));
+		movesLeftDisplay.setText(text);
 	}
 	
 	private void setShotsLeftDisplay() {
-		shotsLeftDisplay.setText("Shots: " + getShotsLeft());
+		String text = formatTextForSidebar("Shots", String.valueOf(getShotsLeft()));
+		shotsLeftDisplay.setText(text);
+	}
+	
+	private void setShipsLeftDisplay() {
+		String text = formatTextForSidebar("Ships Left", String.valueOf(getNumShipsLeft()));
+		shipsLeftDisplay.setText(text);
+	}
+	
+	/**
+	 * Nicely formats text-labels so that the text part is always closest to the board itself and the label is always on the
+	 * border of the screen.
+	 * @param label The label text to be displayed.
+	 * @param text The text to be displayed
+	 * @return The label and the text seperated by two spaces on either side of a semicolon and in an order
+	 * which depends on this player's side.
+	 */
+	private String formatTextForSidebar(String label, String text) {
+		return getStartPosition().equals(StartSide.BottomRight) ? text + " : " + label : label + " : " + text;
+	}
+	
+	/**
+	 * Determines if this player has won the game by getting all of their ships in the 
+	 * enemy's territory.
+	 * @return True if the player has won the game, false otherwise.
+	 */
+	public boolean hasWon() {
+		// We assume that this player has won until a ship turns out not to be in enemy territory.
+		boolean hasWon = true;
+		
+		// Iterate through each ship and determine if it's in enemy territory.
+		for (Ship ship : ships) {
+			hasWon = ship.isInEnemyTerritory() && !ship.isDestroyed();
+			if (!hasWon) break;
+		}
+		
+		// Return results
+		return hasWon;
+	}
+	
+	/**
+	 * Called when one of this player's ships are destroyed to update GUI elements..
+	 * @param ship The ship that was destroyed
+	 */
+	public void shipDestroyed(Ship ship) {
+		setShipsLeftDisplay();
 	}
 }

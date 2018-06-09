@@ -9,11 +9,6 @@ import player.Player;
 import ships.Ship;
 
 public class ShipManipulation {
-	
-	/**
-	 * The distance that the ship has to be within when it starts the game.
-	 */
-	public final static int SHIP_START_DISTANCE = 3;
 
 	/**
 	 * Called when the given player presses the enter key
@@ -27,11 +22,9 @@ public class ShipManipulation {
 		
 		Game.GameState state = playersGame.getState();
 		// If we're in the ship placement stage, place one of the player's ships.
-		if (state.equals(Game.GameState.ShipPlacement)) {
-			int playerStartXCoordinate = player.getStartSquare().xCoordinate;
-			
+		if (state.equals(Game.GameState.ShipPlacement)) {			
 			// Make sure that the player is within three squares of their side.
-			if (Board.getDistanceBetween(selectedSquare.xCoordinate, selectedSquare.yCoordinate, playerStartXCoordinate, selectedSquare.yCoordinate) < SHIP_START_DISTANCE) {
+			if (Square.isWithinTerritory(player.getStartPosition(), player.x, player.y)) {
 				// Make sure there's no ship on that square before the player adds it to that square.
 				Ship shipOnSelectedSquare = selectedSquare.getShipOnSquare();
 				if (shipOnSelectedSquare == null) {

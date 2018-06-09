@@ -162,7 +162,7 @@ public class Ship extends Ellipse {
 	
 	/**
 	 * Determines the squares that this ship can possibly move to. 
-	 * @return An arraylist of the squares that this ship can possibly move to.
+	 * @return An Arraylist of the squares that this ship can possibly move to.
 	 */
 	public ArrayList<Square> getPossibleSquares() {
 		ArrayList<Square> possibleSquares = null;
@@ -240,6 +240,9 @@ public class Ship extends Ellipse {
 		health = 0;
 		// Tell the square that we were on that we were sunk.
 		currentPosition.shipDestroyed(this);
+		
+		// Let the player object know that this ship was destroyed.
+		player.shipDestroyed(this);
 	}
 	
 	/**
@@ -280,5 +283,23 @@ public class Ship extends Ellipse {
 	 */
 	public Square getSquare() {
 		return currentPosition;
+	}
+	
+	/**
+	 * Determines if this ship is in the enemy's territory which is used to determine if a player has won the game.
+	 * @return True if it's in enemy territory, false otherwise.
+	 */
+	public boolean isInEnemyTerritory() {
+		boolean isInEnemyTerritory = false;
+		
+		// Only do stuff if the square that the ship is on isn't null.
+		if (getSquare() != null) {
+			isInEnemyTerritory = Square.isWithinTerritory(player.getStartPosition().
+					equals(Player.StartSide.BottomRight) ? Player.StartSide.TopLeft : Player.StartSide.BottomRight, 
+					currentPosition.xCoordinate, currentPosition.yCoordinate);
+		}
+		
+		// Return results of this processing.
+		return isInEnemyTerritory;
 	}
 }

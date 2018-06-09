@@ -31,7 +31,7 @@ public class Game {
 	 * The state of this current game.
 	 */
 	public static enum GameState {
-		ShipPlacement, Firing, Movement;  
+		ShipPlacement, Firing, Movement, Ended;  
 	}
 	
 	// The current game state. Start it in ship placement by default.
@@ -128,20 +128,47 @@ public class Game {
 			turn++;
 		}
 		
+		// if there's a winner in this game, end the game.
 		if (isWinner()) end();
 		board.setStatus(stage + " turn " + turn);
 	}
 	
+	String winner;
+	/**
+	 * Determines if there is a winner in this game and sets the winner variable
+	 * to a win message if there is a winner.
+	 * @return True if there's a winner in the game, false othwerwise.
+	 */
 	public boolean isWinner() {
-		// TODO replace with real code
-		return false;
+		Player player1 = players[0];
+		Player player2 = players[1];
+		
+		boolean player1Won = player1.hasWon() || player2.getNumShipsLeft() <= 0;
+		boolean player2Won = player2.hasWon() || player1.getNumShipsLeft() <= 0;
+		
+		// If any of the players have won, set up the win message.
+		if (player1Won && player2Won) {
+			winner = "Both players won!";
+		}
+		else if (player1Won) {
+			winner = player1.getClass().toString() + " won!";
+		}
+		else if (player2Won) {
+			winner = player2.getClass().toString() + " won!";
+		}
+		
+		// Return results.
+		return player1Won || player2Won;
 	}
 	
 	/**
 	 * Ends this game, displaying the victor
 	 */
 	public void end() {
-		
+		// Set the state to ended.
+		state = GameState.Ended;
+		// Set the message to the winner.
+		board.setMessage(winner);
 	}
 	
 	/**
@@ -173,8 +200,12 @@ public class Game {
 	 */
 	public void refreshState() {
 		GameState state = getState();
+		// winner beats all other states
+		if (isWinner()) {
+			this.state = GameState.Ended;
+		}
 		// If we're in ship placement, check if all ships for each player have been placed.
-		if (state.equals(GameState.ShipPlacement)) {
+		else if (state.equals(GameState.ShipPlacement)) {
 			boolean unplacedShip = false;
 			for (Ship ship : getBoard().getShips()) {
 				if (!ship.hasBeenPlaced()) {

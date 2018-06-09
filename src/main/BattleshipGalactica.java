@@ -43,11 +43,13 @@ public class BattleshipGalactica extends Application {
 		primaryStage.setTitle("Battleship Galactica");
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
-		primaryStage.show();
 		
 		// Now begin monitoring user input.
 		InputHandler.setScene(scene);
 		
 		currentGame.start();
+		
+		// Show the scene after all the rendering is done.
+		primaryStage.show();
 	}
 }
