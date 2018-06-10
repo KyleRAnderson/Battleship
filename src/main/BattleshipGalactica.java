@@ -3,6 +3,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import music.MusicPlayer;
 
 /**
  * 
@@ -34,6 +35,8 @@ public class BattleshipGalactica extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		// Begin the music right away
+		MusicPlayer.play();
 		
 		currentGame = new Game();
 		// FIRST thing that needs to be done is the generation of the board. Everything else breaks without a board.
