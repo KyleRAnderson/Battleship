@@ -1,11 +1,13 @@
-package player;
+package game.player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
-import board.Board;
-import board.Square;
+import game.Game;
+import game.board.Board;
+import game.board.Square;
+import game.ships.Ship;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -13,11 +15,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import main.BattleshipGalactica;
-import main.Game;
 import main.InputHandler;
 import manipulation.PlayerManipulation;
 import manipulation.ShipManipulation;
-import ships.Ship;
 
 public abstract class Player {
 	public static enum StartSide {

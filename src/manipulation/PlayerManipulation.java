@@ -1,9 +1,9 @@
 package manipulation;
 
-import board.Board;
-import board.Square;
-import player.Player;
-import ships.Ship;
+import game.board.Board;
+import game.board.Square;
+import game.player.Player;
+import game.ships.Ship;
 
 public class PlayerManipulation {	
 	/**

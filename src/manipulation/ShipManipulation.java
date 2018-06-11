@@ -2,11 +2,11 @@ package manipulation;
 
 import java.util.ArrayList;
 
-import board.Board;
-import board.Square;
-import main.Game;
-import player.Player;
-import ships.Ship;
+import game.Game;
+import game.board.Board;
+import game.board.Square;
+import game.player.Player;
+import game.ships.Ship;
 
 public class ShipManipulation {
 

@@ -1,12 +1,12 @@
-package ships;
+package game.ships;
 
 import java.util.ArrayList;
 
-import board.Board;
-import board.Square;
+import game.board.Board;
+import game.board.Square;
+import game.player.Player;
 import javafx.scene.shape.Ellipse;
 import manipulation.ShipManipulation;
-import player.Player;
 
 /**
  * The ship class representing a player's ship.

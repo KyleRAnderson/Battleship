@@ -1,11 +1,11 @@
-package player;
+package game.player;
 
 import javafx.scene.paint.Color;
 import main.BattleshipGalactica;
-import main.Game;
 
 import java.util.HashMap;
 
+import game.Game;
 import javafx.scene.input.KeyCode;
 
 public class Militia extends Player{

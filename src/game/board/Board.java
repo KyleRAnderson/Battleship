@@ -1,5 +1,8 @@
-package board;
+package game.board;
 
+import game.Game;
+import game.player.Player;
+import game.ships.Ship;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -16,9 +19,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import main.BattleshipGalactica;
-import main.Game;
-import player.Player;
-import ships.Ship;
 
 /**
  * The board class for all board wide operations

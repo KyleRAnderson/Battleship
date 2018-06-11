@@ -1,13 +1,13 @@
-package board;
+package game.board;
 
+import game.player.Player;
+import game.ships.Ship;
 import javafx.animation.FillTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
-import player.Player;
-import ships.Ship;
 
 /**
  * The square class, representing a square on the board.
@@ -24,7 +24,8 @@ public class Square extends Rectangle {
 	// The board that this square belongs to.
 	private Board board;
 	
-	static final Color DEFAULT_FILL = Color.ALICEBLUE, DEFAULT_STROKE = Color.BLACK, MISS_FILL = Color.YELLOW;
+	static final Color DEFAULT_FILL = Color.ALICEBLUE, DEFAULT_STROKE = Color.BLACK, MISS_FILL = Color.YELLOW, 
+			HIT_FILL = Color.RED;
 	static final double DEFAULT_THICKNESS = 1.0, SELECTED_THICKNESS = 2.0;
 	
 	/**
@@ -96,7 +97,10 @@ public class Square extends Rectangle {
 	public void shoot(Player shooter) {
 		if (currentShip != null) {
 			// Don't allow the player to shoot their own ship
-			if (!currentShip.player.equals(shooter) && isUsable()) currentShip.hit(shooter.getDamage());
+			if (!currentShip.player.equals(shooter) && isUsable()) {
+				currentShip.hit(shooter.getDamage());
+				hit();
+			}
 		}
 		// Otherwise, call the miss function.
 		else miss();
@@ -108,8 +112,25 @@ public class Square extends Rectangle {
 	 */
 	private void miss() {
 		// Set the fill to yellow to indicate the miss.
-		setFill(MISS_FILL);
-		FillTransition fillTransition = new FillTransition(Duration.millis(1000), this, MISS_FILL, getCurrentFill());
+		fadeFrom(MISS_FILL, getCurrentFill());
+	}
+	
+	/**
+	 * Sets up the fill for hitting the other ship.
+	 */
+	private void hit() {
+		// Fade from red to the regular colour.
+		fadeFrom(HIT_FILL, getCurrentFill());
+	}
+	
+	/**
+	 * Fades this square from the given from colour to the given to colour 
+	 * @param from The colour to start from 
+	 * @param to the colour to fade to.
+	 */
+	private void fadeFrom(Color from, Color to) {
+		setFill(from);
+		FillTransition fillTransition = new FillTransition(Duration.millis(1000), this, from, to);
 		fillTransition.setAutoReverse(true);
 		fillTransition.play();
 		

@@ -1,12 +1,13 @@
-package main;
+package game;
 
-import board.Board;
+import game.board.Board;
+import game.player.IMC;
+import game.player.Militia;
+import game.player.Player;
+import game.ships.Ship;
+import main.InputHandler;
 import manipulation.PlayerManipulation;
 import manipulation.ShipManipulation;
-import player.IMC;
-import player.Militia;
-import player.Player;
-import ships.Ship;
 
 /**
  * Game object that represents a game being played
