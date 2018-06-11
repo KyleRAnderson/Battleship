@@ -1,7 +1,11 @@
 package board;
 
+import javafx.animation.FillTransition;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 import player.Player;
 import ships.Ship;
 
@@ -20,7 +24,7 @@ public class Square extends Rectangle {
 	// The board that this square belongs to.
 	private Board board;
 	
-	static final Color DEFAULT_FILL = Color.ALICEBLUE, DEFAULT_STROKE = Color.BLACK;
+	static final Color DEFAULT_FILL = Color.ALICEBLUE, DEFAULT_STROKE = Color.BLACK, MISS_FILL = Color.YELLOW;
 	static final double DEFAULT_THICKNESS = 1.0, SELECTED_THICKNESS = 2.0;
 	
 	/**
@@ -63,7 +67,7 @@ public class Square extends Rectangle {
 		yCoordinate = y;
 		
 		// Set the colours for the square
-		setFillToDefault();
+		refreshFill();
 		setStroke(DEFAULT_STROKE);
 	}
 	
@@ -91,8 +95,31 @@ public class Square extends Rectangle {
 	 */
 	public void shoot(Player shooter) {
 		if (currentShip != null) {
-			currentShip.hit(shooter.getDamage());
+			// Don't allow the player to shoot their own ship
+			if (!currentShip.player.equals(shooter) && isUsable()) currentShip.hit(shooter.getDamage());
 		}
+		// Otherwise, call the miss function.
+		else miss();
+	}
+	
+	/**
+	 * Carries out the proper actions to signify to the player that they hit this square
+	 * but there were no ships on it.
+	 */
+	private void miss() {
+		// Set the fill to yellow to indicate the miss.
+		setFill(MISS_FILL);
+		FillTransition fillTransition = new FillTransition(Duration.millis(1000), this, MISS_FILL, getCurrentFill());
+		fillTransition.setAutoReverse(true);
+		fillTransition.play();
+		
+		// Set an on finished event handler because we need to make sure that the fill is the right colour.
+		fillTransition.setOnFinished(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				refreshFill();				
+			}
+		});
 	}
 	
 	/**
@@ -116,7 +143,7 @@ public class Square extends Rectangle {
 		else if (!currentShip.player.equals(ship.player)) {
 			currentShip = Board.battle(currentShip, ship);
 			shipAdded = currentShip.equals(ship);
-			setFillToDefault();
+			refreshFill();
 		}
 		
 		return shipAdded;
@@ -133,7 +160,7 @@ public class Square extends Rectangle {
 	public void shipDestroyed(Ship ship) {
 		// Only do stuff if the ship that was destroyed is the one that's on this square
 		if (ship.equals(currentShip)) {
-			setFillToDefault();
+			refreshFill();
 		}
 	}
 	
@@ -146,10 +173,10 @@ public class Square extends Rectangle {
 	}
 	
 	/**
-	 * Determines if this square should be selected, and if so selects it. 
-	 * If not, goes back to default border.
+	 * Determines if there are players selecting this square, and returns the fill colour of the player if so.
 	 */
-	public void refreshSelection() {
+	public Color getPlayerSelection() {
+		Color fill = null;
 		// Set selection variable to false
 		isSelected = false;
 		
@@ -158,27 +185,20 @@ public class Square extends Rectangle {
 		// Iterate through all the players in the game
 		for (Player player : board.getGame().getPlayers()) {
 			if (player.x == xCoordinate && player.y == yCoordinate) {
-				setSelected(player.getSelectionColour(), true);
+				fill = player.getSelectionColour();
 				isSelected = true;
 				numberOfPlayers++;
 			}
 		}
 		
 		// If there's more than one player on the grid, set to brown selection.
-		if (numberOfPlayers > 1) setSelected(Color.BROWN, true);
+		if (numberOfPlayers > 1) fill = Color.BROWN;
 		
 		// If the selection variable is still false, reset fill to default
-		if (!isSelected) setSelected(null, false);
-	}
-	
-	/**
-	 * Sets the thickness and the colour of selection of this rectangle
-	 * @param colour The colour of the selection 
-	 * @param selected True if the square is selected, false otherwise.
-	 */
-	private void setSelected(Color colour, boolean selected) {
-		if (selected) setFill(colour);
-		else setFillToDefault();
+		if (!isSelected) fill = null;
+		
+		// Return results.
+		return fill;
 	}
 	
 	/**
@@ -222,10 +242,22 @@ public class Square extends Rectangle {
 	}
 	
 	/**
-	 * Sets the fill properly to whatever the default is.
+	 * Sets the fill properly to whatever it is supposed to be.
 	 */
-	private void setFillToDefault() {
-		if (isUsable()) setFill(DEFAULT_FILL);
-		else setFill(Color.RED);
+	public void refreshFill() {
+		setFill(getCurrentFill());
+	}
+	
+	/**
+	 * Determines what the appropriate fill colour for this square should be
+	 * @return The appropriate fill colour for this square currently.
+	 */
+	private Color getCurrentFill() {
+		// Attempt to set the fill to the player colour.
+		Color fill = getPlayerSelection();
+		if (fill == null && isUsable()) fill = DEFAULT_FILL;
+		// Otherwise, red colour
+		else if (fill == null) fill = Color.RED;
+		return fill;
 	}
 }

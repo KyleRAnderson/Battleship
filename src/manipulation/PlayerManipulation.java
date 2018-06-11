@@ -55,8 +55,8 @@ public class PlayerManipulation {
 			Square newSquare = board.getSquare(x, y);
 			
 			// Refresh the selection on the squares
-			oldSquare.refreshSelection();
-			newSquare.refreshSelection();
+			oldSquare.refreshFill();
+			newSquare.refreshFill();
 		}
 	}
 	
