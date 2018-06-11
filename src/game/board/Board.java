@@ -5,7 +5,6 @@ import game.player.Player;
 import game.ships.Ship;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
@@ -26,7 +25,7 @@ import main.BattleshipGalactica;
  * 2018-06-05
  * ICS3U
  */
-public class Board extends Parent {
+public class Board extends BorderPane {
 	/**
 	 * The Game object to which this board belongs.
 	 */
@@ -62,9 +61,6 @@ public class Board extends Parent {
 	// The players playing on this board.
 	Player[] players;
 	
-	// The grid that controls the way things are laid out.
-	BorderPane root;
-	
 	private static final double PADDING = 15;
 	
 	/**
@@ -75,12 +71,9 @@ public class Board extends Parent {
 		// Set the game object
 		this.game = game;
 		
-		// Set up the grid pane.
-		root = new BorderPane();
-		root.setPadding(new Insets(PADDING, PADDING, PADDING, PADDING));
-		getChildren().add(root);
+		setPadding(new Insets(PADDING, PADDING, PADDING, PADDING));
 		
-		root.setBackground(new Background(new BackgroundImage(new Image("file:" + 
+		setBackground(new Background(new BackgroundImage(new Image("file:" + 
 		BattleshipGalactica.RESOURCES_LOCATION + "/main_background.png", 1000, 1000, false, true), 
 				BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, 
 				BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
@@ -96,14 +89,14 @@ public class Board extends Parent {
 		// Add the turn indicator and the message to the screen.
 		HBox header = new HBox(statusLabel, message);
 		header.setSpacing(50);
-		root.setTop(header);
+		setTop(header);
 		
 		// Set up a gridpane for the squares
 		GridPane squaresPane = new GridPane();
 		squaresPane.setHgap(0);
 		squaresPane.setVgap(0);
 		squaresPane.setPadding(new Insets(0, 0, 0, 0));
-		root.setCenter(squaresPane);
+		setCenter(squaresPane);
 		
 		// Let's get the squares objects rolling. Populate the squares array.
 		for (int y = 0; y < NUM_ROWS; y++) {
@@ -227,7 +220,7 @@ public class Board extends Parent {
 	public void addShip(Ship ship) {
 		Square squareToAddTo = ship.getSquare();
 		// Now actually add the ship to the GUI
-		((GridPane) root.getCenter()).add(ship, squareToAddTo.xCoordinate, squareToAddTo.yCoordinate);
+		((GridPane) getCenter()).add(ship, squareToAddTo.xCoordinate, squareToAddTo.yCoordinate);
 		// Tell the square that a ship has been added on its position
 		squareToAddTo.addShip(ship);
 	}
@@ -241,7 +234,7 @@ public class Board extends Parent {
 		if (ship.getSquare() != null && game.getState().equals(Game.GameState.ShipPlacement)) {
 			Square square = ship.getSquare();
 			// Remove the ship from the gridpane.
-			((GridPane) root.getCenter()).getChildren().remove(ship);
+			((GridPane) getCenter()).getChildren().remove(ship);
 			// Tell the square that that ship was removed.
 			square.removeShip(ship);
 		}		
@@ -253,7 +246,7 @@ public class Board extends Parent {
 	 * @param oldPosition The old position that the ship was at.
 	 */
 	public void moveShip(Ship ship) {
-		((GridPane) root.getCenter()).getChildren().remove(ship);
+		((GridPane) getCenter()).getChildren().remove(ship);
 		addShip(ship);
 	}
 	
@@ -268,11 +261,11 @@ public class Board extends Parent {
 		// Now just figure out where to put the text and put it there.
 		if (player.getStartPosition().equals(Player.StartSide.BottomRight)) {
 			sideBar.setAlignment(Pos.CENTER_RIGHT);
-			root.setRight(sideBar);
+			setRight(sideBar);
 		}
 		else {
 			sideBar.setAlignment(Pos.CENTER_LEFT);
-			root.setLeft(sideBar);
+			setLeft(sideBar);
 		}
 	}
 }

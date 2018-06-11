@@ -1,10 +1,9 @@
 package main;
-import game.Game;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import music.MusicPlayer;
+import menu.MainMenu;
 
 /**
  * 
@@ -16,10 +15,7 @@ public class BattleshipGalactica extends Application {
 	/**
 	 * The file path for the resources used in this program.
 	 */
-	public static final String RESOURCES_LOCATION = "resources";
-	// The current game being played.
-	private static Game currentGame;	
-	
+	public static final String RESOURCES_LOCATION = "resources";	
 	/**
 	 * The font for all headings in the game.
 	 */
@@ -34,14 +30,13 @@ public class BattleshipGalactica extends Application {
 	}
 
 
+	private static Stage stage;
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		// Begin the music right away
-		MusicPlayer.play();
+		stage = primaryStage;
 		
-		currentGame = new Game();
-		// FIRST thing that needs to be done is the generation of the board. Everything else breaks without a board.
-		Scene scene = new Scene(currentGame.getBoard());
+		// Create the main menu right away and get the menuing going.
+		Scene scene = new Scene(new MainMenu());
 		
 		// Now set up some window things
 		primaryStage.setTitle("Battleship Galactica");
@@ -51,9 +46,15 @@ public class BattleshipGalactica extends Application {
 		// Now begin monitoring user input.
 		InputHandler.setScene(scene);
 		
-		currentGame.start();
-		
 		// Show the scene after all the rendering is done.
 		primaryStage.show();
+	}
+	
+	/**
+	 * Resizes the screen automatically based on the content.
+	 */
+	public static void resize() {
+		stage.sizeToScene();
+		stage.centerOnScreen();
 	}
 }
