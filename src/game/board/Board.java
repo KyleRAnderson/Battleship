@@ -3,8 +3,11 @@ package game.board;
 import game.Game;
 import game.player.Player;
 import game.ships.Ship;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
@@ -86,8 +89,17 @@ public class Board extends BorderPane {
 		message.setFont(BattleshipGalactica.HEADING_FONT);
 		message.setFill(Color.BLACK);
 		
+		Button returnToMenuButton = new Button("Main Menu");
+		returnToMenuButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				// Simply end the game.
+				game.returnToMenu();				
+			}
+		});
+		
 		// Add the turn indicator and the message to the screen.
-		HBox header = new HBox(statusLabel, message);
+		HBox header = new HBox(returnToMenuButton, statusLabel, message);
 		header.setSpacing(50);
 		setTop(header);
 		

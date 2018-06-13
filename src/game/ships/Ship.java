@@ -66,7 +66,7 @@ public class Ship extends Ellipse {
 		Square newPosition = getSquareInDirection(direction);
 		
 		// Do null check before proceeding
-		if (newPosition != null && canMove()) {
+		if (newPosition != null && canMove() && getPossibleSquares().contains(newPosition)) {
 			// Before we move, clear selection
 			ShipManipulation.selectShip(this, false);
 			// Move to new position

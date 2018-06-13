@@ -45,7 +45,7 @@ public abstract class Player {
 	// The ship currently selected by this player
 	protected Ship selectedShip;
 	
-	protected static int NUM_SHOTS = 4, NUM_MOVES = 1;
+	protected static int NUM_SHOTS = 4, NUM_MOVES = 4;
 	protected int numShotsLeft = NUM_SHOTS, numMovesLeft = NUM_MOVES;
 	
 	// Some things displayed on the board to help the user know what's going on.

@@ -18,6 +18,8 @@ import music.MusicPlayer;
  */
 public class MainMenu extends Parent {
 	
+	public static MainMenu currentInstance;
+	
 	/**
 	 * The current game that's occuring
 	 */
@@ -32,6 +34,7 @@ public class MainMenu extends Parent {
 	 * Creates a new main menu object used by the user for preferences, new games, etc.
 	 */
 	public MainMenu() {
+		currentInstance = this;
 		// Begin the music right away
 		MusicPlayer.play();
 		
