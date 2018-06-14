@@ -18,13 +18,18 @@ public class MusicPlayer {
 	 */
 	private static File[] musicFiles;
 	
+	/**
+	 * Whether or not the music is currently playing.
+	 */
+	private static boolean isPlaying;
+	
 	// An arraylist of the song queue to have.
 	private static ArrayList<File> songQueue;
 	
+	/**
+	 * The Media Player that will play the music.
+	 */
 	private static MediaPlayer player;
-	
-	// The index of the song that should be played.
-	int playIndex;
 	
 	// Need to initialize the musicFiles array
 	static {
@@ -57,7 +62,39 @@ public class MusicPlayer {
 		if (player == null) {
 			nextSong();			
 		}
-		else player.play();
+		else {
+			player.play();
+			isPlaying = true;
+		}
+	}
+	
+	public static void pause() {
+		if (player != null) {
+			player.pause();
+			isPlaying = false;
+		}
+	}
+	
+	/**
+	 * Stops the player if it exists
+	 */
+	public static void stop() {
+		if (player != null) player.stop();
+	}
+	/**
+	 * Plays music if pause, or pauses music if playing.
+	 */
+	public static void toggleState() {
+		if (isPlaying) pause();
+		else play();
+	}
+	
+	/**
+	 * Determines whether or not music is currently playing 
+	 * @return True if music is playing, false otherwise.
+	 */
+	public static boolean isPlaying() {
+		return isPlaying;
 	}
 	
 	/**
@@ -71,6 +108,8 @@ public class MusicPlayer {
 		if (songQueue != null && songQueue.size() > 0) {
 			// Instantiate a new media player for the playing of the media.
 			Media media = new Media(songQueue.get(0).toURI().toASCIIString());
+			// Stop the old player so songs don't play on top of each other.
+			stop();
 			player = new MediaPlayer(media);
 			player.setVolume(1);
 			// Make sure we handle end of the media.
@@ -84,8 +123,8 @@ public class MusicPlayer {
 			// Remove the song from the queue so we don't play it again.
 			songQueue.remove(0);
 			// Begin playing the new song.
-			player.play();
-		}		
+			play();
+		}	
 	}
 	
 	/**

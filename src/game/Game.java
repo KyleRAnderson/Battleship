@@ -8,7 +8,6 @@ import game.ships.Ship;
 import main.InputHandler;
 import manipulation.PlayerManipulation;
 import manipulation.ShipManipulation;
-import menu.MainMenu;
 
 /**
  * Game object that represents a game being played
@@ -243,12 +242,5 @@ public class Game {
 			if (!canMove) startFiring();
 		}
 		
-	}
-	
-	/**
-	 * Returns to the menu, ending this game.
-	 */
-	public void returnToMenu() {
-		MainMenu.currentInstance.gameEnded(this);
 	}
 }
