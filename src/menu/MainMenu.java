@@ -5,9 +5,16 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import main.BattleshipGalactica;
 import music.MusicPlayer;
 
 /**
@@ -36,6 +43,11 @@ public class MainMenu extends Parent {
 		
 		organizer = new BorderPane();
 		getChildren().add(organizer);
+		
+		organizer.setBackground(new Background(new BackgroundImage(new Image("file:" + 
+		BattleshipGalactica.RESOURCES_LOCATION + "/main_background.png", 1000, 1000, false, true), 
+				BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, 
+				BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
 		
 		// Start a new game to start things
 		newGame();

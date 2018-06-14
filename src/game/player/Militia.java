@@ -10,7 +10,7 @@ import javafx.scene.input.KeyCode;
 
 public class Militia extends Player{
 	
-	HashMap<String, KeyCode> getKeyBindings() { 
+	public HashMap<String, KeyCode> getKeyBindings() { 
 		return new HashMap<String, KeyCode>() {
 			private static final long serialVersionUID = 1L;
 			{

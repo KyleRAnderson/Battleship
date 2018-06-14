@@ -33,7 +33,7 @@ public class Square extends Rectangle {
 	 * start of the game and to determine if the other player's ship is in the enemy's territory 
 	 * at the end of the game.
 	 */
-	public static final int TERRITORY_SIZE = 2;
+	public static final int TERRITORY_SIZE = 10;
 	
 	/**
 	 * Determines whether the given point is within the territory of the provided side.
@@ -143,6 +143,8 @@ public class Square extends Rectangle {
 		});
 	}
 	
+	// Set to true to indicate that there's currently a battle over this square.
+	private boolean isBattle = false;
 	/**
 	 * Attempts to add the ship to this position, adding it if possible, or
 	 * entering battle mode if this square is being contested.
@@ -161,10 +163,8 @@ public class Square extends Rectangle {
 		/* If there's an enemy ship on this position already, this square is being contested
 		 * so we need to enter battle mode
 		 */
-		else if (!currentShip.player.equals(ship.player)) {
-			currentShip = Board.battle(currentShip, ship);
-			shipAdded = currentShip.equals(ship);
-			refreshFill();
+		else if (!currentShip.player.equals(ship.player) && !isBattle) {
+			new Battle(currentShip, ship);
 		}
 		
 		return shipAdded;
@@ -179,8 +179,8 @@ public class Square extends Rectangle {
 	}
 	
 	public void shipDestroyed(Ship ship) {
-		// Only do stuff if the ship that was destroyed is the one that's on this square
-		if (ship.equals(currentShip)) {
+		// Only do stuff if the ship that was destroyed is the one that's on this square and if there wasn't just a battle.
+		if (ship.equals(currentShip) && !isBattle) {
 			refreshFill();
 		}
 	}
@@ -259,7 +259,7 @@ public class Square extends Rectangle {
 	 * @return True if it can move, false otherwise.
 	 */
 	public boolean canMoveToSquare(Ship ship) {
-		return currentShip == null || !currentShip.player.equals(ship.player);
+		return currentShip == null || !currentShip.player.equals(ship.player) && isUsable();
 	}
 	
 	/**

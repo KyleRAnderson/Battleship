@@ -5,6 +5,7 @@ import game.player.Player;
 import game.ships.Ship;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
@@ -14,6 +15,7 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -30,6 +32,7 @@ public class Board extends BorderPane {
 	 * The Game object to which this board belongs.
 	 */
 	private Game game;
+	private GridPane playingBoard;
 	
 	/**
 	 * The number of ships that each player has to deal with.
@@ -73,11 +76,6 @@ public class Board extends BorderPane {
 		
 		setPadding(new Insets(PADDING, PADDING, PADDING, PADDING));
 		
-		setBackground(new Background(new BackgroundImage(new Image("file:" + 
-		BattleshipGalactica.RESOURCES_LOCATION + "/main_background.png", 1000, 1000, false, true), 
-				BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, 
-				BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-		
 		// Set up the turn label at the top of the board.
 		statusLabel.setFont(BattleshipGalactica.HEADING_FONT);
 		statusLabel.setFill(Color.RED);
@@ -92,11 +90,11 @@ public class Board extends BorderPane {
 		setTop(header);
 		
 		// Set up a gridpane for the squares
-		GridPane squaresPane = new GridPane();
-		squaresPane.setHgap(0);
-		squaresPane.setVgap(0);
-		squaresPane.setPadding(new Insets(0, 0, 0, 0));
-		setCenter(squaresPane);
+		playingBoard = new GridPane();
+		playingBoard.setHgap(0);
+		playingBoard.setVgap(0);
+		playingBoard.setPadding(new Insets(0, 0, 0, 0));
+		setCenter(new Pane(playingBoard));
 		
 		// Let's get the squares objects rolling. Populate the squares array.
 		for (int y = 0; y < NUM_ROWS; y++) {
@@ -104,7 +102,7 @@ public class Board extends BorderPane {
 				// Make a new square object for this position.
 				Square square = new Square(x, y, this);
 				// Add the square to the row
-				squaresPane.add(square, x, y);
+				playingBoard.add(square, x, y);
 				// Put the square in the squares array
 				squares[x][y] = square;
 			}
@@ -123,20 +121,14 @@ public class Board extends BorderPane {
 				player.addShip(ship);
 			}
 		}
-	}
-	
-	/**
-	 * Performs the necessary actions to get the two given ships into battle mode
-	 * @param defender The ship defending this square
-	 * @param contester The ship contesting this square
-	 * @return The ship that wins the battle.
-	 */
-	public static Ship battle(Ship defender, Ship contester) {
-		// TODO replace with actual code.
-		Ship winner = defender;
 		
-		// Return the ship that won the battle
-		return winner;
+		// Also add a battle zone at the bottom
+		Label battleZoneLabel = new Label("Battle zone: ");
+		battleZoneLabel.setFont(Battle.BATTLE_FONT);
+		battleZoneLabel.setTextFill(Color.WHITE);
+		HBox battleZone = new HBox(battleZoneLabel);
+		battleZone.setSpacing(10);
+		setBottom(battleZone);
 	}
 	
 	/**
@@ -220,7 +212,7 @@ public class Board extends BorderPane {
 	public void addShip(Ship ship) {
 		Square squareToAddTo = ship.getSquare();
 		// Now actually add the ship to the GUI
-		((GridPane) getCenter()).add(ship, squareToAddTo.xCoordinate, squareToAddTo.yCoordinate);
+		playingBoard.add(ship, squareToAddTo.xCoordinate, squareToAddTo.yCoordinate);
 		// Tell the square that a ship has been added on its position
 		squareToAddTo.addShip(ship);
 	}
@@ -234,7 +226,7 @@ public class Board extends BorderPane {
 		if (ship.getSquare() != null && game.getState().equals(Game.GameState.ShipPlacement)) {
 			Square square = ship.getSquare();
 			// Remove the ship from the gridpane.
-			((GridPane) getCenter()).getChildren().remove(ship);
+			playingBoard.getChildren().remove(ship);
 			// Tell the square that that ship was removed.
 			square.removeShip(ship);
 		}		
@@ -246,7 +238,7 @@ public class Board extends BorderPane {
 	 * @param oldPosition The old position that the ship was at.
 	 */
 	public void moveShip(Ship ship) {
-		((GridPane) getCenter()).getChildren().remove(ship);
+		playingBoard.getChildren().remove(ship);
 		addShip(ship);
 	}
 	

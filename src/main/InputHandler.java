@@ -19,7 +19,12 @@ public class InputHandler {
 	/**
 	 * Used to keep track of all the keys possible to be pressed and the method which must be called for each one.
 	 */
-	private static final HashMap<KeyCode, Consumer<KeyCode>> BINDINGS = new HashMap<KeyCode, Consumer<KeyCode>>();
+	private static HashMap<KeyCode, Consumer<KeyCode>> BINDINGS = new HashMap<KeyCode, Consumer<KeyCode>>();
+	
+	/**
+	 * A backup list of the main bindings in case override bindings are set.
+	 */
+	private static HashMap<KeyCode, Consumer<KeyCode>> mainBindings = new HashMap<KeyCode, Consumer<KeyCode>>();
 	
 	/**
 	 * Sets the scene object for the InputHandler to handle input from.
@@ -46,6 +51,7 @@ public class InputHandler {
 	 */
 	public static void addKeyBinding(KeyCode binding, Consumer<KeyCode> handler) {
 		BINDINGS.put(binding, handler);
+		mainBindings.put(binding, handler);
 	}
 	
 	/**
@@ -68,6 +74,7 @@ public class InputHandler {
 	 */
 	public static void removeKeyBinding(KeyCode binding) {
 		BINDINGS.remove(binding);
+		mainBindings.remove(binding);
 	}
 	
 	/**
@@ -77,6 +84,7 @@ public class InputHandler {
 	public static void removeKeyBindings(Collection<KeyCode> bindings) {
 		for (KeyCode binding : bindings) {
 			BINDINGS.remove(binding);
+			mainBindings.remove(binding);
 		}
 	}
 	
@@ -99,5 +107,20 @@ public class InputHandler {
 	 */
 	public static void startMonitoring() {
 		monitoring = true;
+	}
+	
+	/**
+	 * Sets bindings to be used instead of the main bindings in cases such as during battle mode.
+	 * @param overrideBindings The override key bindings to be used.
+	 */
+	public static void addOverrideBindings(HashMap<KeyCode, Consumer<KeyCode>> overrideBindings) {
+		BINDINGS = overrideBindings;
+	}
+	
+	/**
+	 * Resets the key bindings back to the main bindings. 
+	 */
+	public static void clearOverrideBindings() {
+		BINDINGS = mainBindings;
 	}
 }

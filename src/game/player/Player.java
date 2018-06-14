@@ -74,6 +74,13 @@ public abstract class Player {
 			start_y = 0;
 		}
 		
+		setKeyBindings();
+	}
+	
+	/**
+	 * Begins to listen for this player's key bindings to be pressed.
+	 */
+	public void setKeyBindings() {
 		InputHandler.addKeyBindings(getKeysUsed().values(), new Consumer<KeyCode>() {
 			@Override
 			public void accept(KeyCode t) {
@@ -101,7 +108,7 @@ public abstract class Player {
 	 * Gets the key bindings for the specific 
 	 * @return
 	 */
-	abstract HashMap<String, KeyCode> getKeyBindings();
+	public abstract HashMap<String, KeyCode> getKeyBindings();
 	
 	/**
 	 * Returns a list of the keys that this player uses

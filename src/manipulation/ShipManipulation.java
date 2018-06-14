@@ -73,6 +73,20 @@ public class ShipManipulation {
 	}
 	
 	/**
+	 * Moves the given ship to the new position
+	 * @param shipToMove The ship to move
+	 * @param newSquare The new square to move the ship to
+	 */
+	public static void moveShip(Ship shipToMove, Square newSquare) {
+		// Nullify the player's selected ship
+		shipToMove.player.setSelectedShip(null);
+		
+		// Move the ship
+		shipToMove.move(newSquare, true);
+		shipToMove.player.getGame().refreshState();
+	}
+	
+	/**
 	 * Adds the given ship to the board.
 	 * @param board The board to add the ship to
 	 * @param ship The ship to be added.
@@ -81,7 +95,7 @@ public class ShipManipulation {
 		Square squareAtPosition = board.getSquare(ship.player.x, ship.player.y);
 		// Make sure that the given ship has not been placed already and that the square exists and is empty.
 		if (!ship.hasBeenPlaced() && squareAtPosition.getShipOnSquare() == null) {
-			ship.move(board.getSquare(ship.player.x, ship.player.y));
+			ship.teleport(board.getSquare(ship.player.x, ship.player.y));
 			board.addShip(ship);
 			
 			// Refresh the game state.

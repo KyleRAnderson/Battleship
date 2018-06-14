@@ -70,24 +70,16 @@ public class Ship extends Ellipse {
 			// Before we move, clear selection
 			ShipManipulation.selectShip(this, false);
 			// Move to new position
-			move(newPosition);
-			// Notify player that ship was moved.
-			player.shipMoved();
-			
-//			// TODO get working somehow Now begin the nice transition for what we're doing.
-//			TranslateTransition transition = new TranslateTransition(Duration.millis(1000), this);
-//			transition.setByX(1);
-//			transition.setByY(1);
-//			transition.play();
-			player.getGame().getBoard().moveShip(this);
+			move(newPosition, true);
 		}
 	}
 	
 	/**
 	 * Moves the piece to the provided new position.
 	 * @param newPosition The new position of the ship
+	 * @param countAgainstPlayer Set to true to count this move as one of the player's moves, false otherwise.
 	 */
-	public void move(Square newPosition) {
+	public void move(Square newPosition, boolean countAgainstPlayer) {
 		// Attempt to add this ship to the given position.
 		boolean didAdd = newPosition.addShip(this);
 		
@@ -96,8 +88,24 @@ public class Ship extends Ellipse {
 			// Get this ship off of it's old square.
 			if (currentPosition != null) currentPosition.removeShip(this);
 			currentPosition = newPosition;
+			
+			// If we're counting this against the player, notify the player of the move.
+			if (countAgainstPlayer) {
+				player.shipMoved();
+				player.getGame().getBoard().moveShip(this);
+			}
 		}
 	}
+	
+	/**
+	 * Teleports this ship to the given location without counting this move
+	 * against the player's number of moves.
+	 * @param newPosition The new square to go to.
+	 */
+	public void teleport(Square newPosition) {
+		move(newPosition, false);
+	}
+	
 	/**
 	 * Determine if this ship can move, legally
 	 * @return True if the ship is allowed to move, false otherwise.
