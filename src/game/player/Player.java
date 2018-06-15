@@ -260,10 +260,13 @@ public abstract class Player {
 	public void setSelectedShip(Ship ship) {
 		// Only do stuff if the ship is null or its player is this player. DON'T MOVE OPPONENTS SHIPS!
 		if (ship == null || (ship.player.equals(this) && canMove())) {
-			// Call selection changed function (usually would be an event).
-			PlayerManipulation.shipSelectionChanged(selectedShip, ship, this);
-			
+			Ship oldShip = selectedShip;
 			selectedShip = ship;
+			// Call selection changed function (usually would be an event).
+			PlayerManipulation.shipSelectionChanged(oldShip, ship, this);
+			
+			// If the new ship that's selected cannot move, don't bother selecting it.
+			if (selectedShip != null && !selectedShip.canMove()) selectedShip = null;
 		}
 	}
 	
@@ -309,8 +312,6 @@ public abstract class Player {
 	public void moveTo(int x, int y) {
 		this.x = x;
 		this.y = y;
-		// Nullify the selected ship.
-		setSelectedShip(null);
 	}
 	
 	/**

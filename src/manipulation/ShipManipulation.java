@@ -129,7 +129,7 @@ public class ShipManipulation {
 		ArrayList<Square> possibleSquares = ship.getPossibleSquares();
 		
 		// Only iterate if it's possible
-		if (possibleSquares != null) {
+		if (possibleSquares != null && possibleSquares.size() > 0) {
 			// Iterate through each of the ship's possible squares.
 			for (Square square : possibleSquares) {
 				// Highlight if necessary, or clear highlight if requested.

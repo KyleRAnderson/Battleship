@@ -33,7 +33,7 @@ public class Square extends Rectangle {
 	 * start of the game and to determine if the other player's ship is in the enemy's territory 
 	 * at the end of the game.
 	 */
-	public static final int TERRITORY_SIZE = 10;
+	public static final int TERRITORY_SIZE = 2;
 	
 	/**
 	 * Determines whether the given point is within the territory of the provided side.
