@@ -76,7 +76,7 @@ public class BattleshipGalactica extends Application {
 	 * @return The URL for that resource
 	 */
 	public static URL getRawURL(String location) {
-		return BattleshipGalactica.class.getResource(location);
+		return BattleshipGalactica.class.getResource("/" + location);
 	}
 	
 	/**
@@ -89,7 +89,7 @@ public class BattleshipGalactica extends Application {
 		ArrayList<String> files = new ArrayList<String>();
 		try {
 			// First convert the folder path to a correct path, then get all the string filenames in that path,
-			ArrayList<String> fileStrings = getResourceFiles(folderPath);
+			ArrayList<String> fileStrings = getResourceFiles("/" + folderPath);
 			
 			// Iterate through each file path and get the actual file object for it.
 			for (String filePath : fileStrings) {
