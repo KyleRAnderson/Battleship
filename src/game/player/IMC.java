@@ -35,7 +35,7 @@ public class IMC extends Player {
 	
 	public Color getSelectionColour() { return Color.BLUE; }
 	
-	public String getIcon() { return "file:" + BattleshipGalactica.RESOURCES_LOCATION + "/imc.png"; }
+	public String getIcon() { return BattleshipGalactica.getCorrectPath(BattleshipGalactica.RESOURCES_LOCATION + "/imc.png"); }
 
 	@Override
 	public String getName() {

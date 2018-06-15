@@ -33,24 +33,25 @@ public class MusicPlayer {
 	
 	// Need to initialize the musicFiles array
 	static {
-		// Get a file for the music folder.
-		File musicFolder = new File(BattleshipGalactica.RESOURCES_LOCATION + "/music");
-		// Populate our array of music files with the files in the folder.
-		musicFiles = musicFolder.listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				boolean shouldAccept = false;
-				for (String extension : SUPPORTED_FORMAT_EXTENSIONS) {
-					// Loop until we discover that this audio format is accepted.
-					if (name.endsWith(extension)) {
-						shouldAccept = true;
-						break;
-					}
-				}
-				// Return the results of the processing.
-				return shouldAccept;
-			}
-		});
+//		// Get a file for the music folder.
+//		File musicFolder = new File(BattleshipGalactica.getRawURL(BattleshipGalactica.RESOURCES_LOCATION + "/music").getFile());
+//		// Populate our array of music files with the files in the folder.
+//		musicFiles = musicFolder.listFiles(new FilenameFilter() {
+//			@Override
+//			public boolean accept(File dir, String name) {
+//				boolean shouldAccept = false;
+//				for (String extension : SUPPORTED_FORMAT_EXTENSIONS) {
+//					// Loop until we discover that this audio format is accepted.
+//					if (name.endsWith(extension)) {
+//						shouldAccept = true;
+//						break;
+//					}
+//				}
+//				// Return the results of the processing.
+//				return shouldAccept;
+//			}
+//		});
+		musicFiles = BattleshipGalactica.getAllFilesInFolder(BattleshipGalactica.RESOURCES_LOCATION + "/music", new ArrayList<String>(Arrays.asList(SUPPORTED_FORMAT_EXTENSIONS))).toArray(new File[0]);
 	}
 	
 	

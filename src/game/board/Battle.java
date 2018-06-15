@@ -6,11 +6,20 @@ import java.util.function.Consumer;
 import game.player.Player;
 import game.ships.Ship;
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 import main.InputHandler;
 
 public class Battle {
@@ -23,7 +32,7 @@ public class Battle {
 	 */
 	Board board;
 	
-	Label instructionText, countdownText;
+	Label instructionText, countdownText, contesterLabel, defenderLabel;
 	
 	/**
 	 * The HBox in which all the elements will be positioned.
@@ -56,6 +65,21 @@ public class Battle {
 		pane = (HBox)board.getBottom();
 		
 		
+		// Make labels that tell the players their score compared to the other player.
+		defenderLabel = new Label("0");
+		defenderLabel.setFont(BATTLE_FONT);
+		defenderLabel.setTextFill(defender.player.getSelectionColour());
+		contesterLabel = new Label("0");
+		contesterLabel.setFont(BATTLE_FONT);
+		contesterLabel.setTextFill(contester.player.getSelectionColour());
+		
+		// Need to decide which label to add first.
+		Label left_side_label = (defender.player.getStartPosition().equals(Player.StartSide.TopLeft)) ? defenderLabel : contesterLabel;
+		Label right_side_label = (left_side_label.equals(defenderLabel)) ? contesterLabel : defenderLabel;
+		
+		// Add the left side label first so it's on the left.
+		pane.getChildren().add(left_side_label);
+		
 		countdownText = new Label();
 		// Add the text to the screen.
 		pane.getChildren().add(countdownText);
@@ -68,6 +92,9 @@ public class Battle {
 		instructionText.setFont(BATTLE_FONT);
 		instructionText.setTextFill(Color.WHITE);
 		instructionText.setText("Prepare for battle! Both players get to the keyboard.");
+		
+		// Now add the right side label so that it's on the r ight
+		pane.getChildren().add(right_side_label);
 		
 		AnimationTimer countdownTimer = new AnimationTimer() {
 			long lastRunTime = 0;
@@ -82,7 +109,7 @@ public class Battle {
 					// If the countdown has reached 0, stop counting down.
 					if (number < 0) {
 						stop();
-						onTimerEnd();
+						onStartTimerEnd();
 					}
 					else {
 						// Otherwise, set the countdown text.
@@ -98,7 +125,7 @@ public class Battle {
 	/**
 	 * Called when the animation timer for the countdown ends.
 	 */
-	private void onTimerEnd() {
+	private void onStartTimerEnd() {
 		// Make a new hashmap for the new key bindings.
 		HashMap<KeyCode, Consumer<KeyCode>> newBindings = new HashMap<KeyCode, Consumer<KeyCode>>();
 		
@@ -107,6 +134,7 @@ public class Battle {
 			public void accept(KeyCode t) {
 				// Simply add to the number of clicks that the contester did
 				defenderClicks++;				
+				defenderLabel.setText(String.valueOf(defenderClicks));
 			}
 		});
 		
@@ -114,7 +142,8 @@ public class Battle {
 			@Override
 			public void accept(KeyCode t) {
 				// Add to the number of clicks that the constester did.
-				contesterClicks++;			
+				contesterClicks++;
+				contesterLabel.setText(String.valueOf(contesterClicks));
 			}
 		});
 		
@@ -163,6 +192,27 @@ public class Battle {
 		Ship winner = (defenderClicks >= contesterClicks) ? defender : contester;
 		Ship loser = (defenderClicks >= contesterClicks) ? contester : defender;
 		
+		
+		// Fill the area with the winner's colour.
+		Color fill = winner.player.getSelectionColour();
+		pane.setBackground(new Background(new BackgroundFill(fill, CornerRadii.EMPTY, Insets.EMPTY)));
+		
+		
+		// Set the clearBattle method for three seconds from this time.
+		Timeline fiveSecondsWonder = new Timeline(new KeyFrame(Duration.seconds(3), new EventHandler<ActionEvent>() {
+
+		    @Override
+		    public void handle(ActionEvent event) {
+		        clearBattle(winner, loser);
+		    }
+		}));
+		fiveSecondsWonder.play();
+	}
+	
+	/**
+	 * Function to clear all the remnants from the battle on screen. 
+	 */
+	private void clearBattle(Ship winner, Ship loser) {
 		InputHandler.clearOverrideBindings();
 		
 		// Remove the overlay nodes.
@@ -174,6 +224,9 @@ public class Battle {
 		// Set the selected ships of both players null
 		loser.player.setSelectedShip(null);
 		winner.player.setSelectedShip(null);
+		
+		// Clear the pane's background.
+		pane.setBackground(Background.EMPTY);
 	}
 	
 	/**
@@ -181,6 +234,9 @@ public class Battle {
 	 */
 	private void removeAll() {		
 		// Remove the pane from the screen.
-		board.getChildren().remove(pane);
+		pane.getChildren().remove(countdownText);
+		pane.getChildren().remove(instructionText);
+		pane.getChildren().remove(defenderLabel);
+		pane.getChildren().remove(contesterLabel);
 	}
 }

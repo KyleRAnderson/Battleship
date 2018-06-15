@@ -34,7 +34,7 @@ public class Militia extends Player{
 	
 	public Color getSelectionColour() { return Color.ORANGE; }
 	
-	public String getIcon() { return "file:" + BattleshipGalactica.RESOURCES_LOCATION + "/militia.png"; }
+	public String getIcon() { return BattleshipGalactica.getCorrectPath(BattleshipGalactica.RESOURCES_LOCATION + "/militia.png"); }
 
 	@Override
 	public String getName() {

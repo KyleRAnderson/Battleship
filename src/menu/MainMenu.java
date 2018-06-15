@@ -44,8 +44,9 @@ public class MainMenu extends Parent {
 		organizer = new BorderPane();
 		getChildren().add(organizer);
 		
-		organizer.setBackground(new Background(new BackgroundImage(new Image("file:" + 
-		BattleshipGalactica.RESOURCES_LOCATION + "/main_background.png", 1000, 1000, false, true), 
+		// Set a nice image background for the entire window.
+		organizer.setBackground(new Background(new BackgroundImage(new Image(BattleshipGalactica.getCorrectPath(
+		BattleshipGalactica.RESOURCES_LOCATION + "/main_background.png"), 1000, 1000, false, true), 
 				BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, 
 				BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
 		
@@ -54,6 +55,8 @@ public class MainMenu extends Parent {
 		
 		// Game controls will go on top of the game, in a horizontal box.
 		Button newGameButton = new Button("New Game");
+		// Make the button unfocusable so that it won't be selected by accident during the game.
+		newGameButton.setFocusTraversable(false);
 		
 		newGameButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -67,6 +70,8 @@ public class MainMenu extends Parent {
 		
 		// Music controls go on the right side of the organizer
 		Button pausePlayMusic = new Button("Pause Music");
+		// Make the button unfocusable so that it won't be selected by accident during the game.
+		pausePlayMusic.setFocusTraversable(false);
 		pausePlayMusic.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -80,6 +85,8 @@ public class MainMenu extends Parent {
 		
 		// Button to skip this song and go to the next one.
 		Button nextSong = new Button("Next Song");
+		// Make the button unfocusable so that it won't be selected by accident during the game.
+		nextSong.setFocusTraversable(false);
 		nextSong.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -95,6 +102,9 @@ public class MainMenu extends Parent {
 	 * Makes a new game and then starts it.
 	 */
 	public void newGame() {
+		if (currentGame != null) {
+			currentGame.end();
+		}
 		currentGame = new Game();
 		currentGame.start();
 		

@@ -134,7 +134,7 @@ public class Game {
 		board.setStatus(stage + " turn " + turn);
 	}
 	
-	String winner;
+	String winner = "";
 	/**
 	 * Determines if there is a winner in this game and sets the winner variable
 	 * to a win message if there is a winner.
@@ -170,6 +170,10 @@ public class Game {
 		state = GameState.Ended;
 		// Set the message to the winner.
 		board.setMessage(winner);
+		
+		// Handle input termination properly.
+		InputHandler.resetBindings();
+		InputHandler.stopMonitoring();
 	}
 	
 	/**
