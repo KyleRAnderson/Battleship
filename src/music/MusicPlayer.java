@@ -1,7 +1,5 @@
 package music;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -16,7 +14,7 @@ public class MusicPlayer {
 	/**
 	 * An array containing all of the names of the music files to be used in this game.
 	 */
-	private static File[] musicFiles;
+	private static String[] musicFiles;
 	
 	/**
 	 * Whether or not the music is currently playing.
@@ -24,7 +22,7 @@ public class MusicPlayer {
 	private static boolean isPlaying;
 	
 	// An arraylist of the song queue to have.
-	private static ArrayList<File> songQueue;
+	private static ArrayList<String> songQueue;
 	
 	/**
 	 * The Media Player that will play the music.
@@ -33,25 +31,8 @@ public class MusicPlayer {
 	
 	// Need to initialize the musicFiles array
 	static {
-//		// Get a file for the music folder.
-//		File musicFolder = new File(BattleshipGalactica.getRawURL(BattleshipGalactica.RESOURCES_LOCATION + "/music").getFile());
-//		// Populate our array of music files with the files in the folder.
-//		musicFiles = musicFolder.listFiles(new FilenameFilter() {
-//			@Override
-//			public boolean accept(File dir, String name) {
-//				boolean shouldAccept = false;
-//				for (String extension : SUPPORTED_FORMAT_EXTENSIONS) {
-//					// Loop until we discover that this audio format is accepted.
-//					if (name.endsWith(extension)) {
-//						shouldAccept = true;
-//						break;
-//					}
-//				}
-//				// Return the results of the processing.
-//				return shouldAccept;
-//			}
-//		});
-		musicFiles = BattleshipGalactica.getAllFilesInFolder(BattleshipGalactica.RESOURCES_LOCATION + "/music", new ArrayList<String>(Arrays.asList(SUPPORTED_FORMAT_EXTENSIONS))).toArray(new File[0]);
+		musicFiles = BattleshipGalactica.getAllFilesInFolder(BattleshipGalactica.RESOURCES_LOCATION + "/music", new ArrayList<String>(Arrays.asList(SUPPORTED_FORMAT_EXTENSIONS))).toArray(new String[0]);
+//		musicFiles = new String[] { "Grab yer sword.wav", "Hunt for blackbeard's booty.wav", "Royal Navy March.mp3", "Treasure hunt.wav", "United States Navy March_ Crosby.mp3" };
 	}
 	
 	
@@ -108,7 +89,8 @@ public class MusicPlayer {
 		// If it's still null or empty, don't do anything.
 		if (songQueue != null && songQueue.size() > 0) {
 			// Instantiate a new media player for the playing of the media.
-			Media media = new Media(songQueue.get(0).toURI().toASCIIString());
+			
+			Media media = new Media(BattleshipGalactica.getCorrectPath(BattleshipGalactica.RESOURCES_LOCATION + "/music/" + songQueue.get(0)));
 			// Stop the old player so songs don't play on top of each other.
 			stop();
 			player = new MediaPlayer(media);
@@ -143,10 +125,10 @@ public class MusicPlayer {
 		// Only populate if we can, if there's music to be played.
 		if (musicFiles != null && musicFiles.length > 0) {
 			// Convert the musicFiles array to an arraylist so we can manipulate it easier.
-			ArrayList<File> availableSongs = new ArrayList<File>(Arrays.asList(musicFiles));
+			ArrayList<String> availableSongs = new ArrayList<String>(Arrays.asList(musicFiles));
 			
 			// Now for the random part of this
-			songQueue = new ArrayList<File>();
+			songQueue = new ArrayList<String>();
 			
 			Random rand = new Random();
 			while (availableSongs.size() > 0) {

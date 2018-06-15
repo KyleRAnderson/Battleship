@@ -90,7 +90,11 @@ public class MainMenu extends Parent {
 		nextSong.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				MusicPlayer.nextSong();				
+				MusicPlayer.nextSong();
+				if (MusicPlayer.isPlaying()) {
+					pausePlayMusic.setText("Pause Music");
+				}
+				else pausePlayMusic.setText("Play Music");
 			}
 		});
 		
