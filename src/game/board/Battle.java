@@ -199,14 +199,14 @@ public class Battle {
 		
 		
 		// Set the clearBattle method for three seconds from this time.
-		Timeline fiveSecondsWonder = new Timeline(new KeyFrame(Duration.seconds(3), new EventHandler<ActionEvent>() {
+		Timeline endAnimation = new Timeline(new KeyFrame(Duration.seconds(3), new EventHandler<ActionEvent>() {
 
 		    @Override
 		    public void handle(ActionEvent event) {
 		        clearBattle(winner, loser);
 		    }
 		}));
-		fiveSecondsWonder.play();
+		endAnimation.play();
 	}
 	
 	/**

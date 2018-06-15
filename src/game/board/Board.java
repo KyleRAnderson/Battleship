@@ -3,6 +3,7 @@ package game.board;
 import game.Game;
 import game.player.Player;
 import game.ships.Ship;
+import javafx.animation.AnimationTimer;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -253,6 +254,45 @@ public class Board extends BorderPane {
 			sideBar.setAlignment(Pos.CENTER_LEFT);
 			setLeft(sideBar);
 		}
+	}
+	
+	/**
+	 * Does the end game animation (changing the fill of all the squares to this new colour) with the given colour
+	 * @param newColour The colour to perform the animation with.
+	 */
+	public void endGameAnimation(Color newColour) {		
+		// Make an animation timer to carry out this animation.
+		AnimationTimer winnerAnimation = new AnimationTimer() {
+			// X and y coordinates for the square.
+			int x = -1, y = 0;
+			long lastRunTime = 0;
+			
+			int addition = 1;
+		    @Override
+		    public void handle(long now) {
+		    	// Only run every once in a while.
+		    	if (now - lastRunTime >= 50000000) {
+		    		lastRunTime = now;
+			        x += addition;
+			        
+			        // If the x coordinate becomes out of range, switch the direction that we're going.
+			        if (!(0 <= x && x < NUM_COLUMNS)) {
+			        	addition *= -1;
+			        	x += addition;
+			        	y++;
+			        }
+			        
+			        // If we've gone past the number of rows, end the animation.
+			        if (!(0 <= y && y < NUM_ROWS)) {
+			        	stop();
+			        }
+			        else {
+			        	getSquare(x, y).setFill(newColour);
+			        }
+		    	}
+		    }
+		};
+		winnerAnimation.start();
 	}
 }
 

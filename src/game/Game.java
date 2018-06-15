@@ -135,6 +135,7 @@ public class Game {
 	}
 	
 	String winner = "";
+	Player winningPlayer;
 	/**
 	 * Determines if there is a winner in this game and sets the winner variable
 	 * to a win message if there is a winner.
@@ -153,9 +154,11 @@ public class Game {
 		}
 		else if (player1Won) {
 			winner = player1.getName() + " won!";
+			winningPlayer = player1;
 		}
 		else if (player2Won) {
 			winner = player2.getName() + " won!";
+			winningPlayer = player2;
 		}
 		
 		// Return results.
@@ -174,6 +177,11 @@ public class Game {
 		// Handle input termination properly.
 		InputHandler.resetBindings();
 		InputHandler.stopMonitoring();
+		
+		// Do the end game animation!
+		if (winningPlayer != null) {
+			board.endGameAnimation(winningPlayer.getSelectionColour());
+		}
 	}
 	
 	/**
