@@ -1,9 +1,12 @@
 package menu;
 
 import game.Game;
+import game.board.Square;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
@@ -13,7 +16,6 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import main.BattleshipGalactica;
 import music.MusicPlayer;
 
@@ -33,6 +35,27 @@ public class MainMenu extends Parent {
 	 * The organizer for the menu.
 	 */
 	private BorderPane organizer;
+	
+	/**
+	 * Help text displayed to the user when they press the help button.
+	 */
+	private static final String HELP_TEXT = 
+			"Welcome to Battleship Galactica! A hybrid of the classic game of chess and\n"
+			+ "the interesting game of battleship created by Kyle Anderson.\n"
+			+ "The goal of the game is simple: either knock out all of your opponent's ships,\n"
+			+ "using your cannons, or get all of your own ships to the other person's end of the game\n"
+			+ "(within " + Square.TERRITORY_SIZE + " squares of their side). Start by placing your ships within\n"
+			+ "your own territory using the select key and the directional keys for your playing position,\n"
+			+ "in what is known as the ship placement stage.\n"
+			+ "Then move on to firing stage, where you use the directional keys and the select key to hit the\n"
+			+ "enemy's ship. It's a good idea to hide your ships from your opponent using the hide key.\n"
+			+ "You'll know you hit it if the square flashes red. Otherwise the square flashes yellow.\n"
+			+ "Then, you get to move your ships using the select key and the directional keys, by selecting\n"
+			+ "the ship you want to move and then using the directional keys to indicate the direction. Possible\n"
+			+ "squares that the ship can travel to will be highlighted in your colour. Then the cycle repeats\n"
+			+ "with the firing stage once again.\n"
+			+ "The key bindings for your player are listed on your player's side. Good luck, and have fun."
+			;
 	
 	/**
 	 * Creates a new main menu object used by the user for preferences, new games, etc.
@@ -65,8 +88,6 @@ public class MainMenu extends Parent {
 			}
 		});
 		
-		organizer.setTop(new HBox(newGameButton));
-		
 		
 		// Music controls go on the right side of the organizer
 		Button pausePlayMusic = new Button("Pause Music");
@@ -98,8 +119,23 @@ public class MainMenu extends Parent {
 			}
 		});
 		
-		// Add the button to the screen.
-		organizer.setRight(new VBox(pausePlayMusic, nextSong));
+		Button helpButton = new Button("Help");
+		helpButton.setFocusTraversable(false);
+		helpButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				// Simply show the help text to the user.
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Help");
+				alert.setHeaderText("Battleship Galactica Quick Start");
+				alert.setContentText(HELP_TEXT);
+
+				alert.showAndWait();
+			}
+		});
+		
+		// Add all of the buttons to the screen
+		organizer.setTop(new HBox(newGameButton, helpButton, pausePlayMusic, nextSong));
 	}
 	
 	/**

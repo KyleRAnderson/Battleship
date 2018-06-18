@@ -175,8 +175,8 @@ public class Game {
 		board.setMessage(winner);
 		
 		// Handle input termination properly.
-		InputHandler.resetBindings();
 		InputHandler.stopMonitoring();
+		InputHandler.resetBindings();
 		
 		// Do the end game animation!
 		if (winningPlayer != null) {
