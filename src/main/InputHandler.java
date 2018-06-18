@@ -38,7 +38,7 @@ public class InputHandler {
 				KeyCode key = event.getCode();
 				
 				// Now see if there's a binding for that key and if there is, call it.
-				if (BINDINGS.containsKey(key) && monitoring) BINDINGS.get(key).accept(key);;
+				if (BINDINGS.containsKey(key) && monitoring) BINDINGS.get(key).accept(key);
 			}
 			
 		});

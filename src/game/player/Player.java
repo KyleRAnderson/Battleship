@@ -115,7 +115,7 @@ public abstract class Player {
 	 * @return The keys used by this player.
 	 */
 	public HashMap<String, KeyCode> getKeysUsed() {
-		return getKeyBindings(); // TODO make a copy before returning.
+		return getKeyBindings();
 	}
 	
 	/**

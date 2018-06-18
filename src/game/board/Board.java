@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import main.BattleshipGalactica;
+import main.InputHandler;
 
 /**
  * The board class for all board wide operations
@@ -261,6 +262,8 @@ public class Board extends BorderPane {
 	 * @param newColour The colour to perform the animation with.
 	 */
 	public void endGameAnimation(Color newColour) {		
+		// Stop getting user input
+		InputHandler.stopMonitoring();
 		// Make an animation timer to carry out this animation.
 		AnimationTimer winnerAnimation = new AnimationTimer() {
 			// X and y coordinates for the square.

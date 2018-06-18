@@ -10,7 +10,6 @@ import main.BattleshipGalactica;
 
 public class MusicPlayer {
 	
-//	private static final String[] SUPPORTED_FORMAT_EXTENSIONS = new String[] { ".wav", ".mp3" };
 	/**
 	 * An array containing all of the names of the music files to be used in this game.
 	 */
@@ -31,7 +30,6 @@ public class MusicPlayer {
 	
 	// Need to initialize the musicFiles array
 	static {
-//		musicFiles = BattleshipGalactica.getAllFilesInFolder(BattleshipGalactica.RESOURCES_LOCATION + "/music", new ArrayList<String>(Arrays.asList(SUPPORTED_FORMAT_EXTENSIONS))).toArray(new String[0]);
 		musicFiles = new String[] { "Grab yer sword.wav", "Hunt for blackbeard's booty.wav", "Royal Navy March.mp3", "Treasure hunt.wav", "United States Navy March_ Crosby.mp3" };
 	}
 	
