@@ -132,6 +132,14 @@ public class Game {
 		// if there's a winner in this game, end the game.
 		if (isWinner()) end();
 		board.setStatus(stage + " turn " + turn);
+		
+		// Set a new number of shots for turn 6
+		if (turn == 5) {
+			Player.setNewTotalShots(6);
+		}
+		else if (turn == 9) {
+			Player.setNewTotalShots(10);
+		}
 	}
 	
 	String winner = "";
@@ -159,6 +167,7 @@ public class Game {
 		else if (player2Won) {
 			winner = player2.getName() + " won!";
 			winningPlayer = player2;
+			
 		}
 		
 		// Return results.

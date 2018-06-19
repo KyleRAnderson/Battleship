@@ -20,11 +20,6 @@ public class Ship extends Ellipse {
 		Horizontal, Diagonal
 	}
 	
-	/**
-	 * The default amount of damage that a ship does.
-	 */
-	public static int DEFAULT_DAMAGE = 50;
-	
 	public static final double SIZE_X = 15, SIZE_Y = 5;
 	
 	// The player that this ship belongs to.
@@ -36,8 +31,11 @@ public class Ship extends Ellipse {
 	// The direction that this type of ship can move in.
 	private final DirectionOfMovement moveDirection;
 	
+
+	// Max health for ships. 
+	private static final int MAX_HEALTH = 100;
 	// The health of the ship.
-	private int health = 100;
+	private int health = MAX_HEALTH;
 	
 	/**
 	 * Instantiates a new ship object
@@ -233,12 +231,45 @@ public class Ship extends Ellipse {
 		return square != null && square.canMoveToSquare(ship);
 	}
 	
+	/**
+	 * Hits the ship, subtracting the given amount of damage from the ship's health.
+	 * @param damage The damage to be done to the ship
+	 */
 	public void hit(int damage) {
 		// Subtract what's possible to be subtracted from the health.
-		health -= (damage > health) ? health : damage;
+		int newHealth = health;
+		newHealth -= (damage > health) ? health : damage;
+		setHealth(newHealth);
+		
+		refreshFill();
 		
 		// If the ship has no more health left, you sunk my battleship! Destroy it!
 		if (isDestroyed()) destroy();
+	}
+	
+	/**
+	 * Sets the new health for this ship
+	 * @param newHealth The new health for this ship.
+	 */
+	private void setHealth(int newHealth) {
+		health = newHealth;
+		refreshFill();
+	}
+	
+	/**
+	 * Gets the current opacity of the fill that the ship should be coloured.
+	 * @return The opacity of the fill, as determined by the health lefto on the ship.
+	 */
+	public static double getCurrentOpacity(int health) {
+		// Use formula to determine the health.
+		return (double)health / MAX_HEALTH * 1.0;
+	}
+	
+	/**
+	 * Refreshes the fill and opacity of the ship based on the remaining health.
+	 */
+	private void refreshFill() {
+		setOpacity(getCurrentOpacity(health));
 	}
 	
 
@@ -246,7 +277,7 @@ public class Ship extends Ellipse {
 	 * Destroys the current ship, setting its square to a red fill and making it unusable.
 	 */
 	public void destroy() {
-		health = 0;
+		setHealth(0);
 		// Tell the square that we were on that we were sunk.
 		currentPosition.shipDestroyed(this);
 		

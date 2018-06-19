@@ -33,7 +33,7 @@ public abstract class Player {
 	/**
 	 * The amount of damage that this player does when hitting a ship with a cannon ball.
 	 */
-	protected int damage = 50;
+	private static int damage = 50;
 	
 	private StartSide startSide;
 	
@@ -46,6 +46,14 @@ public abstract class Player {
 	protected Ship selectedShip;
 	
 	protected static int NUM_SHOTS = 4, NUM_MOVES = 4;
+	
+	/**
+	 * Sets a new number of shots for all players 
+	 * @param newShots The new number of shots to set.
+	 */
+	public static void setNewTotalShots(int newShots) {
+		NUM_SHOTS = newShots;
+	}
 	protected int numShotsLeft = NUM_SHOTS, numMovesLeft = NUM_MOVES;
 	
 	// Some things displayed on the board to help the user know what's going on.
@@ -290,7 +298,7 @@ public abstract class Player {
 	/**
 	 * Hides or shows all of the player's hides, if the player would like to see their ships
 	 * or if the player wishes to hide their ships. 
-	 * @param hide True to hid the player's ships, false to show them again.
+	 * @param hide True to hide the player's ships, false to show them again.
 	 */
 	public void toggleHide(boolean hide) {
 		// If everything is already hidden or already being shown, we needn't bother do anything.
@@ -451,7 +459,7 @@ public abstract class Player {
 		
 		// Iterate through each ship and determine if it's in enemy territory.
 		for (Ship ship : ships) {
-			hasWon = ship.isInEnemyTerritory() && !ship.isDestroyed();
+			hasWon = ship.isInEnemyTerritory() || ship.isDestroyed();
 			if (!hasWon) break;
 		}
 		

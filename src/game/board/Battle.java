@@ -57,6 +57,10 @@ public class Battle {
 		this.defender = defender;
 		this.contester = contester;
 		
+		// Hide all of the player's ships so that the other player doesn't see them.
+		defender.player.toggleHide(true);
+		contester.player.toggleHide(true);
+		
 		// Make the ships that are battling visible to one another
 		defender.setVisible(true);
 		contester.setVisible(true);
